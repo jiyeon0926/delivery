@@ -9,6 +9,7 @@ import static org.springframework.http.HttpStatus.*;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
+
     /* 400 BAD_REQUEST : 잘못된 요청 */
     CATEGORY_STEP_OVER(BAD_REQUEST , "카테고리는 3단계 까지 가능합니다."),
 
@@ -21,7 +22,8 @@ public enum ErrorCode {
 
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
     DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
-    BANED_EMAIL(CONFLICT,"이미 탈퇴한 유저입니다")
+    BANED_EMAIL(CONFLICT,"이미 탈퇴한 유저입니다"),
+    ABC(CONFLICT,"dasdasdasdas")
 
     ;
 

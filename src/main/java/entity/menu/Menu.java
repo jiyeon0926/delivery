@@ -1,12 +1,10 @@
-package entity;
+package entity.menu;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -24,6 +22,8 @@ public class Menu {
 
     @Column(nullable = false)
     private BigDecimal price;
+
+    private String description;
 
     public Menu() {
     }
