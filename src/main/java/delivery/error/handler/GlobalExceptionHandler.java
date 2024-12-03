@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import static error.errorcode.ErrorCode.DUPLICATE_RESOURCE;
+import static delivery.error.errorcode.ErrorCode.DUPLICATE_RESOURCE;
 
 @Slf4j
 @RestControllerAdvice
