@@ -12,6 +12,8 @@ public enum ErrorCode {
 
     /* 400 BAD_REQUEST : 잘못된 요청 */
     CATEGORY_STEP_OVER(BAD_REQUEST , "카테고리는 3단계 까지 가능합니다."),
+    STORE_COUNT_OVER(BAD_REQUEST, "가게는 3개까지 등록할 수 있습니다."),
+    NOT_REGISTER_STORE(BAD_REQUEST, "손님은 가게를 등록할 수 없습니다."),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     UNAUTHORIZED_PASSWORD(UNAUTHORIZED, "password 가 일치하지 않습니다."),
@@ -21,7 +23,7 @@ public enum ErrorCode {
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     SESSION_NOT_FOUND(NOT_FOUND, "로그인이 필요합니다."),
     ID_NOT_FOUND(NOT_FOUND, "id를 찾을 수 없습니다."),
-    SHOP_NOT_FOUND(NOT_FOUND, "Id에 해당하는 가게를 찾을 수 없습니다."),
+    STORE_NOT_FOUND(NOT_FOUND, "등록된 가게를 찾을 수 없습니다."),
 
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
     DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
