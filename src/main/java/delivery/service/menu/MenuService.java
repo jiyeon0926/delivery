@@ -2,8 +2,10 @@ package delivery.service.menu;
 
 import delivery.dto.menu.MenuResponseDto;
 import delivery.entity.menu.Menu;
+import delivery.entity.store.Store;
 import delivery.error.errorcode.ErrorCode;
 import delivery.error.exception.CustomException;
+import delivery.repository.store.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import delivery.repository.menu.MenuRepository;
@@ -16,10 +18,11 @@ import java.util.Objects;
 public class MenuService {
 
     private final MenuRepository menuRepository;
+    private final StoreRepository storeRepository;
 
     public MenuResponseDto createMenu(Long userId, Long storeId, String name, BigDecimal price, String description) {
         // 가게 확인
-        Store store = storepRepository.findByIdOrElseThrow(storeId);
+        Store store = storeRepository.findStoreByIdAndUserIdOrElseThrow(storeId, userId);
 
         // 로그인된 사용자가 가게 주인인지 확인
         if (!Objects.equals(userId,store.getUser().getId())) {
@@ -31,6 +34,6 @@ public class MenuService {
 
         Menu savedMenu = menuRepository.save(menu);
 
-        return new MenuResponseDto(store.getId(), savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice());
+        return new MenuResponseDto(store.getId(), savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice(), savedMenu.getDescription());
     }
 }

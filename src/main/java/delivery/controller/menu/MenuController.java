@@ -1,8 +1,7 @@
 package delivery.controller.menu;
 
 import delivery.dto.menu.MenuRequestDto;
-import delivery.error.errorcode.ErrorCode;
-import delivery.error.exception.CustomException;
+import delivery.entity.user.User;
 import delivery.service.menu.MenuService;
 import delivery.dto.menu.MenuResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,9 +27,6 @@ public class MenuController {
 
         // 세션에서 로그인된 사용자 정보 가져오기
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("sessionKey") == null) {
-            throw new CustomException(ErrorCode.SESSION_NOT_FOUND);
-        }
         User loginUser = (User) session.getAttribute("sessionKey");
 
         // menu 생성 service 실행

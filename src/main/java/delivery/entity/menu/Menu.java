@@ -1,6 +1,7 @@
 package delivery.entity.menu;
 
 import delivery.entity.Base;
+import delivery.entity.store.Store;
 import jakarta.persistence.*;
 import lombok.Getter;
 
