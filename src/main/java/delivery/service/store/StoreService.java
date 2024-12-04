@@ -53,17 +53,17 @@ public class StoreService {
     }
 
     public StoreMenuResponseDto findMenuByStoreId(Long storeId) {
-        Optional<Store> store = storeRepository.findMenuByStoreId(storeId);
+        Store store = storeRepository.findMenuByStoreIdOrElseThrow(storeId);
 
-        List<MenuDto> menuDtos = store.get().getMenus().stream()
+        List<MenuDto> menuDtos = store.getMenus().stream()
                 .map(menu -> new MenuDto(menu.getName(), menu.getPrice(), menu.getDescription()))
                 .collect(Collectors.toList());
 
         return new StoreMenuResponseDto(
-                store.get().getId(),
-                store.get().getStoreName(),
-                store.get().getOpenTime(),
-                store.get().getCloseTime(),
+                store.getId(),
+                store.getStoreName(),
+                store.getOpenTime(),
+                store.getCloseTime(),
                 menuDtos);
     }
 
