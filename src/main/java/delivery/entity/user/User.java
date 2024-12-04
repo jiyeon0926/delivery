@@ -30,7 +30,7 @@ public class User extends Base {
 
     private boolean division;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     private List<Store> stores = new ArrayList<>();
 
@@ -46,5 +46,9 @@ public class User extends Base {
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void updateDivision() {
+        this.division = false;
     }
 }

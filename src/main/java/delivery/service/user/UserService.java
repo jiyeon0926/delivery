@@ -60,6 +60,7 @@ public class UserService {
     }
 
     //유저 삭제
+    @Transactional
     public void deleteUser(Long id, String password) {
 
         User user = userRepository.findUserByIdOrElseThrow(id);
@@ -69,6 +70,7 @@ public class UserService {
             throw new CustomException(ErrorCode.UNAUTHORIZED_PASSWORD);
         }
 
-        userRepository.delete(user);
+        user.updateDivision();
+        userRepository.save(user);
     }
 }
