@@ -14,8 +14,9 @@ public enum ErrorCode {
     CATEGORY_STEP_OVER(BAD_REQUEST , "카테고리는 3단계 까지 가능합니다."),
     STORE_COUNT_OVER(BAD_REQUEST, "가게는 3개까지 등록할 수 있습니다."),
     NOT_REGISTER_STORE(BAD_REQUEST, "손님은 가게를 등록할 수 없습니다."),
-    NOT_OPEN_SOTRE(BAD_REQUEST, "현재 가게 오픈시간이 아닙니다."),
+    NOT_OPEN_STORE(BAD_REQUEST, "현재 가게 오픈시간이 아닙니다."),
     ORDER_COMPLETED(BAD_REQUEST, "완료된 주문입니다."),
+    NOT_DELETE_STORE(BAD_REQUEST, "남아있는 가게가 존재합니다. 가게 폐업 후 탈퇴해주세요"),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     UNAUTHORIZED_PASSWORD(UNAUTHORIZED, "password 가 일치하지 않습니다."),
@@ -23,6 +24,7 @@ public enum ErrorCode {
     NOT_OWNER_CRUD(UNAUTHORIZED,"가게 운영자만 메뉴를 관리 할 수 있습니다."),
     NOT_OWNER_UPDATE(UNAUTHORIZED,"가게 운영자만 수정할 수 있습니다."),
     UNAUTHORIZED_OTHER_ORDER(UNAUTHORIZED,"다른 사람의 주문은 조회할 수 없습니다."),
+    UNAUTHORIZED_OWNER_ORDER(UNAUTHORIZED, "사장님은 주문할 수 없습니다."),
 
 
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */

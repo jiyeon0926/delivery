@@ -41,7 +41,11 @@ public class OrderService {
         LocalTime now = LocalTime.now();
         //오픈 시간이 아닐 경우
         if(!isStoreOpen(store, now)){
-            throw new CustomException(ErrorCode.NOT_OPEN_SOTRE);
+            throw new CustomException(ErrorCode.NOT_OPEN_STORE);
+        }
+        //사장님의 경우 주문 불가
+        if(Objects.equals(user.getRole(), UserStatus.OWNER.toString())){
+            throw new CustomException(ErrorCode.UNAUTHORIZED_OWNER_ORDER);
         }
 
         Order order = new Order(user, store, menu);
