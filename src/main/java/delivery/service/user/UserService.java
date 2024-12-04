@@ -6,10 +6,13 @@ import delivery.dto.user.UserResponseDto;
 import delivery.entity.user.User;
 import delivery.error.errorcode.ErrorCode;
 import delivery.error.exception.CustomException;
+import delivery.repository.store.StoreRepository;
 import delivery.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +20,9 @@ public class UserService {
 
     private final PasswordValidation passwordValidation;
     private final UserRepository userRepository;
+
     private final PasswordEncoder passwordEncoder;
+    private final StoreRepository storeRepository;
 
     //유저 생성
     public UserResponseDto signup(String name, String email, String password, String role) {
@@ -68,6 +73,11 @@ public class UserService {
         //패스워드 불일치 시
         if(!passwordEncoder.matches(password, user.getPassword())) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_PASSWORD);
+        }
+        Optional<Integer> count = storeRepository.countByUserId(id);
+
+        if (count.isPresent()) {
+            throw new CustomException(ErrorCode.NOT_DELETE_STORE);
         }
 
         user.updateDivision();
