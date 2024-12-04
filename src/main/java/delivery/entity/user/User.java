@@ -30,10 +30,6 @@ public class User extends Base {
 
     private boolean division;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JoinColumn(name = "user_id")
-    private List<Store> stores = new ArrayList<>();
-
     public User() {}
 
     public User(String name, String email, String password, String role, boolean division) {
