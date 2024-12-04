@@ -1,12 +1,8 @@
 package delivery.entity.user;
 
 import delivery.entity.Base;
-import delivery.entity.store.Store;
 import jakarta.persistence.*;
 import lombok.Getter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity

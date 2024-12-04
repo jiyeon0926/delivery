@@ -1,7 +1,6 @@
 package delivery.repository.order;
 
 import delivery.entity.order.Order;
-import delivery.entity.user.User;
 import delivery.error.errorcode.ErrorCode;
 import delivery.error.exception.CustomException;
 import org.springframework.data.domain.Page;
@@ -11,8 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
-
-    Optional<Order> findOrderByStoreId(Long storeId);
 
     default Order findOrderByIdOrElseThrow(Long id) {
 

@@ -1,8 +1,5 @@
 package delivery.config;
 
-import delivery.error.errorcode.ErrorCode;
-import delivery.error.exception.CustomException;
-
 public enum OrderStatus {
     ORDER_COMPLETED("주문 완료"),
     ORDER_ACCEPTED("주문 수락"),

@@ -2,7 +2,6 @@ package delivery.service.order;
 
 import delivery.config.OrderStatus;
 import delivery.config.UserStatus;
-import delivery.dto.order.OrderRequestDto;
 import delivery.dto.order.OrderResponseDto;
 import delivery.entity.menu.Menu;
 import delivery.entity.order.Order;
