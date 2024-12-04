@@ -24,6 +24,9 @@ public class Menu extends Base {
 
     private String description;
 
+    @Column(nullable = false)
+    private Boolean isDeleted = false;
+
     public Menu() {
     }
 
@@ -44,6 +47,10 @@ public class Menu extends Base {
         this.name = name;
         this.price = price;
         this.description = description;
+    }
+
+    public void updateDeleted(boolean isDeleted) {
+    this.isDeleted = isDeleted;
     }
 }
 
