@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,9 @@ public class Store extends Base {
     private LocalTime closeTime;
     private boolean division = true;
 
+    @Column(precision = 10, scale = 4, nullable = false)
+    private BigDecimal minOrderPrice;
+
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
@@ -35,17 +39,19 @@ public class Store extends Base {
     @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
     private List<Menu> menus = new ArrayList<>();
 
-    public Store(Long userId, String storeName, LocalTime openTime, LocalTime closeTime) {
+    public Store(Long userId, String storeName, LocalTime openTime, LocalTime closeTime, BigDecimal minOrderPrice) {
         this.userId = userId;
         this.storeName = storeName;
         this.openTime = openTime;
         this.closeTime = closeTime;
+        this.minOrderPrice = minOrderPrice;
     }
 
-    public void updateStore(String storeName, LocalTime openTime, LocalTime closeTime) {
+    public void updateStore(String storeName, LocalTime openTime, LocalTime closeTime, BigDecimal minOrderPrice) {
         this.storeName = storeName;
         this.openTime = openTime;
         this.closeTime = closeTime;
+        this.minOrderPrice = minOrderPrice;
     }
 
     public void updateDivision() {

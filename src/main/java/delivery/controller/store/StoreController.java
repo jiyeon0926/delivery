@@ -44,7 +44,7 @@ public class StoreController {
             throw new CustomException(ErrorCode.NOT_REGISTER_STORE);
         }
 
-        return new ResponseEntity<>(storeService.createStore(userId, storeRequestDto.getStoreName(), storeRequestDto.getOpenTime(), storeRequestDto.getCloseTime()), HttpStatus.CREATED);
+        return new ResponseEntity<>(storeService.createStore(userId, storeRequestDto.getStoreName(), storeRequestDto.getOpenTime(), storeRequestDto.getCloseTime(), storeRequestDto.getMinOrderPrice()), HttpStatus.CREATED);
     }
 
     // 가게 수정
@@ -61,7 +61,7 @@ public class StoreController {
             throw new CustomException(ErrorCode.STORE_NOT_FOUND);
         }
 
-        return ResponseEntity.ok().body(storeService.updateStore(storeId, userId, storeRequestDto.getStoreName(), storeRequestDto.getOpenTime(), storeRequestDto.getCloseTime()));
+        return ResponseEntity.ok().body(storeService.updateStore(storeId, userId, storeRequestDto.getStoreName(), storeRequestDto.getOpenTime(), storeRequestDto.getCloseTime(), storeRequestDto.getMinOrderPrice()));
     }
 
     // 가게 폐업
