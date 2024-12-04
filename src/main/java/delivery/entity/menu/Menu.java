@@ -38,5 +38,12 @@ public class Menu extends Base {
         this.price = price;
         this.description = description;
     }
+
+    // 생성자 (메뉴 수정)
+    public void updateMenu(String name, BigDecimal price, String description){
+        this.name = name;
+        this.price = price;
+        this.description = description;
+    }
 }
 
