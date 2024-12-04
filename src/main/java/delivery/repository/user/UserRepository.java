@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query("SELECT u FROM User u WHERE u.division = true")
+    @Query("SELECT u FROM User u WHERE u.email LIKE %:email% AND u.division = true")
     Optional<User> findUserByEmail(String email);
 
     default User findUserByIdOrElseThrow(long id) {
