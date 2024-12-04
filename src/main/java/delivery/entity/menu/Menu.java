@@ -1,17 +1,16 @@
 package delivery.entity.menu;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import delivery.entity.Base;
+import delivery.entity.store.Store;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 
 @Entity
 @Getter
-public class Menu {
+@Table(name = "menu")
+public class Menu extends Base {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,14 +27,23 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(Long id, String name, BigDecimal price) {
-        this.id = id;
+    @ManyToOne
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store;
+
+    // 생성자 (메뉴 생성)
+    public Menu(Store store, String name, BigDecimal price, String description) {
+        this.store = store;
         this.name = name;
         this.price = price;
+        this.description = description;
     }
 
-    //    @ManyToOne
-//    @JoinColumn(name = "shop_id", nullable = false)
-//    private Store store;
+    // 생성자 (메뉴 수정)
+    public void updateMenu(String name, BigDecimal price, String description){
+        this.name = name;
+        this.price = price;
+        this.description = description;
+    }
 }
 
