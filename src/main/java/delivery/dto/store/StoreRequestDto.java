@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.time.LocalTime;
 
 @Getter
@@ -20,4 +21,7 @@ public class StoreRequestDto {
     @JsonFormat(pattern = "HH:mm")
     @NotNull(message = "마감 시간은 필수 입력 항목입니다.")
     private LocalTime closeTime;
+
+    @NotNull(message = "최소 주문 금액은 필수 입력 항목입니다.")
+    private BigDecimal minOrderPrice;
 }
