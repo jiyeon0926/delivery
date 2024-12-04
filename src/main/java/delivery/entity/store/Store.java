@@ -1,12 +1,15 @@
 package delivery.entity.store;
 
 import delivery.entity.Base;
+import delivery.entity.menu.Menu;
 import delivery.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,6 +31,9 @@ public class Store extends Base {
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
+
+    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
+    private List<Menu> menus = new ArrayList<>();
 
     public Store(Long userId, String storeName, LocalTime openTime, LocalTime closeTime) {
         this.userId = userId;

@@ -18,20 +18,21 @@ public enum ErrorCode {
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     UNAUTHORIZED_PASSWORD(UNAUTHORIZED, "password 가 일치하지 않습니다."),
     UNAUTHORIZED_PASSWORD_FORM(UNAUTHORIZED, "password 형식이 맞지 않습니다."),
+    NOT_OWNER_CRUD(UNAUTHORIZED,"가게 운영자만 메뉴를 관리 할 수 있습니다."),
+
 
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     SESSION_NOT_FOUND(NOT_FOUND, "로그인이 필요합니다."),
     ID_NOT_FOUND(NOT_FOUND, "id를 찾을 수 없습니다."),
     STORE_NOT_FOUND(NOT_FOUND, "등록된 가게를 찾을 수 없습니다."),
+    MENU_NOT_FOUND(NOT_FOUND, "등록된 메뉴를 찾을 수 없습니다."),
+    ALREADY_DELETE_MENU(NOT_FOUND, "삭제된 메뉴입니다."),
 
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
     DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
     DUPLICATE_EMAIL(CONFLICT, "동일한 이메일이 존재합니다"),
     DUPLICATE_PASSWORD(CONFLICT, "동일한 비밀번호로 변경할 수 없습니다."),
-    BANED_EMAIL(CONFLICT,"이미 탈퇴한 유저입니다"),
-    ABC(CONFLICT,"dasdasdasdas")
-
-    ;
+    BANED_EMAIL(CONFLICT,"이미 탈퇴한 유저입니다");
 
     private final HttpStatus httpStatus;
     private final String detail;

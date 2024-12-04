@@ -1,7 +1,9 @@
 package delivery.controller.store;
 
+import delivery.dto.store.StoreMenuResponseDto;
 import delivery.dto.store.StoreRequestDto;
 import delivery.dto.store.StoreResponseDto;
+import delivery.entity.store.Store;
 import delivery.error.errorcode.ErrorCode;
 import delivery.error.exception.CustomException;
 import delivery.service.store.StoreService;
@@ -53,6 +55,12 @@ public class StoreController {
         HttpSession session = servletRequest.getSession();
         Long userId = (Long) session.getAttribute("LOGIN_USER");
 
+        Store store = storeService.findById(storeId);
+
+        if (store.isDivision() == false) {
+            throw new CustomException(ErrorCode.STORE_NOT_FOUND);
+        }
+
         return ResponseEntity.ok().body(storeService.updateStore(storeId, userId, storeRequestDto.getStoreName(), storeRequestDto.getOpenTime(), storeRequestDto.getCloseTime()));
     }
 
@@ -74,5 +82,15 @@ public class StoreController {
         return ResponseEntity.ok().body(storeService.findAllByStoreName(storeName));
     }
 
-    // 가게 단건 조회 (메뉴 테이블과 조인 필요해서 메뉴 기능 구현될 때까지 보류)
+    // 가게 메뉴 포함 단건 조회
+    @GetMapping("/{storeId}")
+    public ResponseEntity<StoreMenuResponseDto> findMenuByStoreId(@PathVariable Long storeId) {
+        Store store = storeService.findById(storeId);
+
+        if (store.isDivision() == false || store == null) {
+            throw new CustomException(ErrorCode.STORE_NOT_FOUND);
+        }
+
+        return ResponseEntity.ok().body(storeService.findMenuByStoreId(storeId));
+    }
 }
