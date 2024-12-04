@@ -28,7 +28,7 @@ public class MenuService {
 
         // 로그인된 사용자가 가게 주인인지 확인
         if (!Objects.equals(userId,store.getUser().getId())) {
-            throw new CustomException(ErrorCode.NOT_OWNER_CREATE);
+            throw new CustomException(ErrorCode.NOT_OWNER_CRUD);
         }
 
         // 메뉴 객체 생성
@@ -44,20 +44,59 @@ public class MenuService {
     public MenuUpdateResponseDto updateMenu(Long userId, Long storeId, Long menuId, String name, BigDecimal price, String description) {
 
         // 가게 확인
-        Store store = storeRepository.findStoreByIdAndUserIdOrElseThrow(storeId, userId);
-
-        // 로그인된 사용자가 가게 주인인지 확인
-        if (!Objects.equals(userId,store.getUser().getId())) {
-            throw new CustomException(ErrorCode.NOT_OWNER_UPDATE);
-        }
+        checkStoreAndOwner(storeId, userId);
 
         // 메뉴 확인
-        Menu menu = menuRepository.findMenuByIdOrElseThrow(menuId);
+        Menu menu = checkMenu(storeId, menuId);
 
         // 메뉴 수정
         menu.updateMenu(name, price, description);
+        menuRepository.save(menu);
+
 
         // dto 반환
         return new MenuUpdateResponseDto(menu.getName(), menu.getPrice(), menu.getDescription());
     }
+
+    public void deleteMenu(Long userId, Long storeId, Long menuId) {
+
+        // 가게 확인
+        checkStoreAndOwner(storeId, userId);
+
+        // 메뉴 확인
+        Menu menu = checkMenu(storeId, menuId);
+
+        // 메뉴 상태를 삭제로 변경
+        menu.updateDeleted(true);
+        menuRepository.save(menu);
+
+    }
+
+    private Menu checkMenu(Long storeId, Long menuId) {
+        // 메뉴 존재 여부 확인
+        Menu menu = menuRepository.findMenuByIdOrElseThrow(menuId);
+
+        // 메뉴가 해당 가게의 메뉴인지 확인
+        if (!Objects.equals(menu.getStore().getId(), storeId)) {
+            throw new CustomException(ErrorCode.MENU_NOT_FOUND);
+        }
+
+        // 메뉴 삭제 여부 확인
+        if (menu.getIsDeleted().equals(true)){
+            throw new CustomException(ErrorCode.ALREADY_DELETE_MENU);
+        }
+        return menu;
+    }
+
+    private void checkStoreAndOwner(Long storeId, Long userId) {
+
+        // 가게 확인
+        Store store = storeRepository.findStoreByIdAndUserIdOrElseThrow(storeId, userId);
+
+        // 로그인된 사용자가 가게 주인인지 확인
+        if (!Objects.equals(userId, store.getUser().getId())) {
+            throw new CustomException(ErrorCode.NOT_OWNER_CRUD);
+        }
+    }
 }
+

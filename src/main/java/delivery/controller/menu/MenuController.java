@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,6 +52,19 @@ public class MenuController {
         //dto 반환
         return new ResponseEntity<>(menuResponseDto, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{menuId}")
+    public ResponseEntity<Void> deleteMenu(@PathVariable Long storeId, @PathVariable Long menuId, HttpServletRequest request) {
+
+        // 세션에서 로그인된 사용자 정보 가져오기
+        HttpSession session = request.getSession(false);
+        Long userId = (Long) session.getAttribute("LOGIN_USER");
+
+        menuservice.deleteMenu(userId, storeId, menuId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
 
 
