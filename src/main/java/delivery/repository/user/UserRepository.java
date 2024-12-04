@@ -1,6 +1,8 @@
 package delivery.repository.user;
 
 import delivery.entity.user.User;
+import delivery.error.errorcode.ErrorCode;
+import delivery.error.exception.CustomException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,13 +16,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     default User findUserByIdOrElseThrow(long id) {
 
         return findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자가 존재하지 않습니다."));
+                () -> new CustomException(ErrorCode.ID_NOT_FOUND));
     }
 
     default User findUserByEmailOrElseThrow(String email) {
 
         return findUserByEmail(email).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자가 존재하지 않습니다."));
+                () -> new CustomException(ErrorCode.ID_NOT_FOUND));
     }
 
 }
