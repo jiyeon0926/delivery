@@ -76,6 +76,22 @@ public class ReviewService {
 
         return reviewResponseDtoList;
     }
+//// 별점으로 정렬
+//    public List<ReviewResponseDto> getReviewByStar(long storeId, int minRating, int maxRating ) {
+//        if (minRating < 1 || minRating > 5 || maxRating < 1 || maxRating > 5) {
+//            throw new CustomException(ErrorCode.STAR_OVER);
+//        }
+//
+//        List<Review> reviewList = reviewRepository.findAllByStoreIdAndRatingBetweenOrderByModifiedAtDesc(storeId, minRating, maxRating);
+//        List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
+//
+//        for (Review review : reviewList) {
+//            ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
+//            reviewResponseDtoList.add(reviewResponseDto);
+//        }
+//
+//        return reviewResponseDtoList;
+//    }
 // 별점으로 정렬
     public List<ReviewResponseDto> getReviewByStar(long storeId, int minRating, int maxRating ) {
         if (minRating < 1 || minRating > 5 || maxRating < 1 || maxRating > 5) {
@@ -92,18 +108,6 @@ public class ReviewService {
 
         return reviewResponseDtoList;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
 

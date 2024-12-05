@@ -35,7 +35,7 @@ public class OrderService {
     //주문 생성
     public OrderResponseDto createOrder(Long userId, Long storeId, Long menuId) {
         User user = userRepository.findUserByIdOrElseThrow(userId);  //사용자 확인
-        Store store = storeRepository.findStoreByIdOrElseThrow(storeId);  //가게 확인
+        Store store = storeRepository.findStoreById(storeId);  //가게 확인
         Menu menu = menuRepository.findMenuByIdOrElseThrow(menuId);  //메뉴 확인
 
         LocalTime now = LocalTime.now();
