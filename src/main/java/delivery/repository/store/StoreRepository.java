@@ -25,4 +25,8 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     @Query("SELECT s FROM Store s INNER JOIN FETCH s.menus m WHERE s.id = :storeId AND s.division = true AND m.isDeleted = false")
     Store findMenuByStoreId(@Param("storeId") Long storeId);
+
+    default Store findStoreById(Long storeId){
+        return findById(storeId).orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+    };
 }
