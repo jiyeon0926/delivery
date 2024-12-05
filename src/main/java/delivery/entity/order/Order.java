@@ -5,6 +5,7 @@ import delivery.entity.Base;
 import delivery.entity.menu.Menu;
 import delivery.entity.store.Store;
 import delivery.entity.user.User;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -42,6 +43,9 @@ public class Order extends Base {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
+    @Column(nullable = true)
+    private String rejectReason;
+
     public Order() {}
 
     public Order(User user, Store store, Menu menu) {
@@ -50,4 +54,8 @@ public class Order extends Base {
         this.menu = menu;
     }
 
+    public void orderReject(String reason){
+        this.rejectReason = reason;
+        this.status = OrderStatus.ORDER_REJECTED;
+    }
 }

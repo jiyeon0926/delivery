@@ -6,7 +6,8 @@ public enum OrderStatus {
     COOKING("조리 중"),
     COOKING_COMPLETED("조리 완료"),
     DELIVERY_PROGRESS("배달 중"),
-    DELIVERY_COMPLETED("배달 완료");
+    DELIVERY_COMPLETED("배달 완료"),
+    ORDER_REJECTED("주문 거절");
 
     private final String description;
 
