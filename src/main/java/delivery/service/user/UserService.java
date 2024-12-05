@@ -83,4 +83,8 @@ public class UserService {
         user.updateDivision();
         userRepository.save(user);
     }
+
+    public String findRoleByUserId(Long userId) {
+        return userRepository.findRoleByUserId(userId);
+    }
 }

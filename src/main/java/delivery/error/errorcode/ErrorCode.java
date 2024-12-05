@@ -25,6 +25,7 @@ public enum ErrorCode {
     UNAUTHORIZED_PASSWORD_FORM(UNAUTHORIZED, "password 형식이 맞지 않습니다."),
     NOT_OWNER_CRUD(UNAUTHORIZED,"가게 운영자만 메뉴를 관리 할 수 있습니다."),
     NOT_OWNER_UPDATE(UNAUTHORIZED,"가게 운영자만 수정할 수 있습니다."),
+    NOT_OWNER_DELETE(UNAUTHORIZED,"가게 운영자만 폐업할 수 있습니다."),
     NOT_OWNER_ORDER(UNAUTHORIZED,"자신의 주문에만 리뷰할 수 있습니다."),
     UNAUTHORIZED_OTHER_ORDER(UNAUTHORIZED,"다른 사람의 주문은 조회할 수 없습니다."),
     UNAUTHORIZED_OWNER_ORDER(UNAUTHORIZED, "사장님은 주문할 수 없습니다."),
