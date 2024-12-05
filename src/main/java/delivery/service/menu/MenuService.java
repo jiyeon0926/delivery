@@ -7,6 +7,7 @@ import delivery.entity.store.Store;
 import delivery.error.errorcode.ErrorCode;
 import delivery.error.exception.CustomException;
 import delivery.repository.store.StoreRepository;
+import delivery.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import delivery.repository.menu.MenuRepository;
@@ -19,17 +20,12 @@ import java.util.Objects;
 public class MenuService {
 
     private final MenuRepository menuRepository;
-    private final StoreRepository storeRepository;
+    private final StoreService storeService;
 
     public MenuResponseDto createMenu(Long userId, Long storeId, String name, BigDecimal price, String description) {
 
         // 가게 확인
-        Store store = storeRepository.findStoreByIdAndUserIdOrElseThrow(storeId, userId);
-
-        // 로그인된 사용자가 가게 주인인지 확인
-        if (!Objects.equals(userId,store.getUser().getId())) {
-            throw new CustomException(ErrorCode.NOT_OWNER_CRUD);
-        }
+        Store store = checkStoreAndOwner(storeId, userId);
 
         // 메뉴 객체 생성
         Menu menu = new Menu(store, name, price, description);
@@ -73,6 +69,7 @@ public class MenuService {
     }
 
     private Menu checkMenu(Long storeId, Long menuId) {
+
         // 메뉴 존재 여부 확인
         Menu menu = menuRepository.findMenuByIdOrElseThrow(menuId);
 
@@ -88,15 +85,17 @@ public class MenuService {
         return menu;
     }
 
-    private void checkStoreAndOwner(Long storeId, Long userId) {
+    private Store checkStoreAndOwner(Long storeId, Long userId) {
 
         // 가게 확인
-        Store store = storeRepository.findStoreByIdAndUserIdOrElseThrow(storeId, userId);
+        Store store = storeService.findStoreById(storeId);
 
         // 로그인된 사용자가 가게 주인인지 확인
         if (!Objects.equals(userId, store.getUser().getId())) {
             throw new CustomException(ErrorCode.NOT_OWNER_CRUD);
         }
+
+        return store;
     }
 }
 

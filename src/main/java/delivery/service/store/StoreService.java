@@ -82,4 +82,8 @@ public class StoreService {
 
         return StoreMenuResponseDto.toDto(store);
     }
+
+    public Store findStoreById(Long storeId) {
+        return storeRepository.findStoreById(storeId);
+    }
 }
