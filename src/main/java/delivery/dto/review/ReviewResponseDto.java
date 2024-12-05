@@ -8,16 +8,18 @@ import java.time.LocalDateTime;
 @Getter
 public class ReviewResponseDto {
     private final Long id;
-    private final String Name;
+    private final String menu;
+    private final String name;
     private final String comment;
     private final int rating;
-    private final LocalDateTime updatedAt;
+    private final LocalDateTime modifiedAt;
 
     public ReviewResponseDto(Review review) {
         this.id = review.getId();
-        this.Name = review.getOrder().getUser().getName();
+        this.menu = review.getOrder().getMenu().getName();
+        this.name = review.getOrder().getUser().getName();
         this.comment = review.getComment();
         this.rating = review.getRating();
-        this.updatedAt = review.getModifiedAt();
+        this.modifiedAt = review.getModifiedAt();
     }
 }

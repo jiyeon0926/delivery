@@ -40,8 +40,7 @@ public class ReviewController {
     // 가게 별 리뷰 전체 조회
     @GetMapping("/stores/{storeId}/reviews")
     public ResponseEntity<List<ReviewResponseDto>> getReviews(@PathVariable Long storeId,
-                                                              HttpServletRequest request
-                                                             ) {
+                                                              HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         Long loginUser = (Long) session.getAttribute("LOGIN_USER");
 
