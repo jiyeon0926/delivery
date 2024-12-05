@@ -3,9 +3,6 @@ package delivery.controller.store;
 import delivery.dto.store.StoreMenuResponseDto;
 import delivery.dto.store.StoreRequestDto;
 import delivery.dto.store.StoreResponseDto;
-import delivery.entity.store.Store;
-import delivery.error.errorcode.ErrorCode;
-import delivery.error.exception.CustomException;
 import delivery.service.store.StoreService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -16,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,20 +25,7 @@ public class StoreController {
     @PostMapping
     public ResponseEntity<StoreResponseDto> createStore(@Valid @RequestBody StoreRequestDto storeRequestDto,
                                                         HttpServletRequest servletRequest) {
-        HttpSession session = servletRequest.getSession();
-        Long userId = (Long) session.getAttribute("LOGIN_USER");
-
-        Optional<Integer> count = storeService.countStore(userId);
-
-        if (count.isPresent() && count.get().intValue() == 3) {
-            throw new CustomException(ErrorCode.STORE_COUNT_OVER);
-        }
-
-        String role = storeService.findRoleByUserId(userId);
-
-        if (role.equals("USER")) {
-            throw new CustomException(ErrorCode.NOT_REGISTER_STORE);
-        }
+        Long userId = getUserId(servletRequest);
 
         return new ResponseEntity<>(storeService.createStore(userId, storeRequestDto.getStoreName(), storeRequestDto.getOpenTime(), storeRequestDto.getCloseTime(), storeRequestDto.getMinOrderPrice()), HttpStatus.CREATED);
     }
@@ -52,14 +35,7 @@ public class StoreController {
     public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long storeId,
                                                         @Valid @RequestBody StoreRequestDto storeRequestDto,
                                                         HttpServletRequest servletRequest) {
-        HttpSession session = servletRequest.getSession();
-        Long userId = (Long) session.getAttribute("LOGIN_USER");
-
-        Store store = storeService.findById(storeId);
-
-        if (store.isDivision() == false) {
-            throw new CustomException(ErrorCode.STORE_NOT_FOUND);
-        }
+        Long userId = getUserId(servletRequest);
 
         return ResponseEntity.ok().body(storeService.updateStore(storeId, userId, storeRequestDto.getStoreName(), storeRequestDto.getOpenTime(), storeRequestDto.getCloseTime(), storeRequestDto.getMinOrderPrice()));
     }
@@ -68,9 +44,7 @@ public class StoreController {
     @DeleteMapping("/{storeId}")
     public ResponseEntity<Void> deleteStore(@PathVariable Long storeId,
                             HttpServletRequest servletRequest) {
-        HttpSession session = servletRequest.getSession();
-        Long userId = (Long) session.getAttribute("LOGIN_USER");
-
+        Long userId = getUserId(servletRequest);
         storeService.deleteStore(storeId, userId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -85,12 +59,13 @@ public class StoreController {
     // 가게 메뉴 포함 단건 조회
     @GetMapping("/{storeId}")
     public ResponseEntity<StoreMenuResponseDto> findMenuByStoreId(@PathVariable Long storeId) {
-        Store store = storeService.findById(storeId);
-
-        if (store.isDivision() == false || store == null) {
-            throw new CustomException(ErrorCode.STORE_NOT_FOUND);
-        }
-
         return ResponseEntity.ok().body(storeService.findMenuByStoreId(storeId));
+    }
+
+    private static Long getUserId(HttpServletRequest servletRequest) {
+        HttpSession session = servletRequest.getSession();
+        Long userId = (Long) session.getAttribute("LOGIN_USER");
+
+        return userId;
     }
 }
