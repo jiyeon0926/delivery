@@ -65,10 +65,29 @@
 |로그아웃|POST|/logout|POST /logout HTTP/1.1 </br> Cookie: JSESSIONID= ${sessionId}|||200 OK </br> 401 Unauthorized|
 
 ## 2. 가게
+|기능|Method|URL|request header|request|response|상태 코드|
+|:----|:---:|:----|:----|:----|:----|:----|
+|가게 생성|POST|/stores|POST /stores HTTP/1.1</br>Content-Type: application/json</br>Cookie: JSESSIONID= ${sessionId}|{</br>"storeName": "동대문엽기떡볶이 은행점",</br>"openTime": "09:00",</br>"closeTime": "21:50",</br>"minOrderPrice": 14000</br>}|{</br>"id": 1,</br>"userId": 1,</br>"storeName": "동대문엽기떡볶이 은행점",</br>"openTime": "09:00:00",</br>"closeTime": "21:50:00",</br>"minOrderPrice": 14000</br>}|201 Created</br>401 Unauthorized|
+|가게 수정|PATCH|/stores/{storeId}|PATCH /stores/1 HTTP/1.1</br>Content-Type: application/json</br>Cookie: JSESSIONID= ${sessionId}|{</br>"storeName": "동대문엽기떡볶이 은행점",</br>"openTime": "09:00",</br>"closeTime": "22:50",</br>"minOrderPrice": 14000</br>}|{</br>"id": 1,</br>"userId": 1,</br>"storeName": "동대문엽기떡볶이 은행점",</br>"openTime": "09:00:00",</br>"closeTime": "22:50:00",</br>"minOrderPrice": 14000</br>}|200 OK</br>401 Unauthorized|
+|가게 폐업|DELETE|/stores/{storeId}|DELETE /stores/1 HTTP/1.1</br>Cookie: JSESSIONID= ${sessionId}|||204 No Content</br>401 Unauthorized</br>404 Not Found|
+|가게 메뉴 포함 단건 조회|GET|/stores/{storeId}|GET /stores/1 HTTP/1.1</br>Cookie: JSESSIONID= ${sessionId}||{</br>"id": 1,</br>"storeName": "동대문엽기떡볶이 은행점",</br>"openTime": "09:00:00",</br>"closeTime": "21:50:00",</br>"minOrderPrice": 15000.0000,</br>"menus": [</br>{</br>"name": "계란죽",</br>"price": 6000.00, </br>"description": "맛있기로 소문난 엽떡 계란죽"</br>},</br>{</br>"name": "엽기떡볶이 2인",</br>"price": 9000.00,</br>"description": "매운 국물 떡볶이"</br>},</br>{</br>"name": "엽기떡볶이 4인",</br>"price": 18000.00,</br>"description": "매운 국물 떡볶이"</br>}</br>]</br>}|200 OK</br>401 Unauthorized|
+|가게명으로 가게 전체 조회|GET|/stores?storeName={가게 이름}|GET /stores HTTP/1.1</br>Cookie: JSESSIONID= ${sessionId}||[</br>{</br>"id": 1,</br>"userId": 1,</br>"storeName": "동대문엽기떡볶이 은행점",</br>"openTime": "09:00:00",</br>"closeTime": "21:50:00",</br>"minOrderPrice": 15000.0000</br>}</br>]|200 OK</br>401 Unauthorized|
 
 ## 3. 메뉴
+|기능|Method|URL|request header|request|response|상태 코드|
+|:----|:---:|:----|:----|:----|:----|:----|
+|메뉴 생성|POST|/stores/{storeId}/menus|POST /stores/1/menus HTTP/1.1 </br>Content-Type: application/json </br>Cookie: JSESSIONID= ${sessionId}|{</br>"name": "엽기떡볶이 4인",</br>"price": 18000,</br>"description": "매운 국물 떡볶이"</br>}|{</br>"storeId": 1,</br>"id": 3,</br>"name": "엽기떡볶이 4인",</br>"price": 18000,</br>"description": "매운 국물 떡볶이"</br>}|201 Created</br>401 Unauthorized|
+|메뉴 수정|PATCH|/stores/{storeId}/menus/{menuid}|PATCH /stores/1/menus/3 HTTP/1.1 </br>Content-Type: application/json </br>Cookie: JSESSIONID= ${sessionId}|{</br>"name": "엽기떡볶이 3~4인", </br>"price": 18000, </br>"description": "매운 국물 떡볶이" </br>}|{</br>"name": "엽기떡볶이 3~4인",</br>"price": 18000,</br>"description": "매운 국물 떡볶이"</br>}|204 No Content</br>401 Unauthorized</br>404 Not Found|
+|메뉴 삭제|DELETE|/stores/{storeId}/menus/{menuid}|DELETE /stores/1/menus/1 HTTP/1.1 </br>Cookie: JSESSIONID= ${sessionId}|||204 No Content </br> 401 Unauthorized</br>404 Not Found|
 
 ## 4. 주문
+|기능|Method|URL|request header|request|response|상태 코드|
+|:----|:---:|:----|:----|:----|:----|:----|
+|주문 생성|POST|/stores/{storeid}/orders|POST /stores/1/orders HTTP/1.1</br>Content-Type: application/json</br>Cookie: JSESSIONID= ${sessionId}|{</br>"menuId": 3</br>}|{</br>"id": 1,</br>"userId": 2,</br>"storeName": "동대문엽기떡볶이 은행점",</br>"menuName": "엽기떡볶이 1인",</br>"price": 4000.00,</br>"status": "주문 완료"</br>}|201 Created</br> 401 Unauthorized|
+|주문 상태 수정|PATCH|/stores/{storeid}/orders/{orderid}|PATCH /stores/1/orders/1 HTTP/1.1</br>Cookie: JSESSIONID= ${sessionId}||{</br>"id": 1,</br>"userId": 2,</br>"storeName": "동대문엽기떡볶이 은행점",</br>"menuName": "엽기떡볶이 1인",</br>"price": 4000.00,</br>"status": "배달 완료"</br>}|200 OK</br>400 Bad Request</br>401 Unauthorized</br>404 Not Found|
+|사장님 기준 주문 전체 조회|GET|/stores/{storeid}/orders|GET /stores/1/orders HTTP/1.1</br>Cookie: JSESSIONID= ${sessionId}||{</br>"content": [</br>{</br>"id": 1,</br>"userId": 2,</br>"storeName": "동대문엽기떡볶이 은행점",</br>"menuName": "엽기떡볶이 1인",</br>"price": 4000.00,</br>"status": "주문 완료"</br>},</br>{</br>"id": 2,</br>"userId": 3,</br>"storeName": "동대문엽기떡볶이 은행점",</br>"menuName": "엽기떡볶이 1인",</br>"price": 4000.00,</br>"status": "주문 완료"</br>}</br>],</br>}|200 OK|
+|손님 기준 주문 전체 조회|GET|/stores/{storeid}/orders|GET /stores/1/orders HTTP/1.1</br>Cookie: JSESSIONID= ${sessionId}||{</br>"content": [</br>{</br>"id": 1,</br>"userId": 2,</br>"storeName": "동대문엽기떡볶이 은행점",</br>"menuName": "엽기떡볶이 1인",</br>"price": 4000.00,</br>"status": "배달 완료"</br>}</br>],</br>}|200 OK</br>401 Unauthorized|
+|주문 단건 조회|GET|/stores/{storeid}/orders/{orderid}|GET /stores/1/orders/1 HTTP/1.1</br>Cookie: JSESSIONID= ${sessionId}||{</br>"id": 1,</br>"userId": 2,</br>"storeName": "동대문엽기떡볶이 은행점",</br>"menuName": "엽기떡볶이 1인",</br>"price": 4000.00,</br>"status": "배달 완료"</br>}|200 OK</br>404 Not Found</br>401 Unauthorized</br>404 Not Found|
 
 ## 5. 리뷰
 |기능|Method|URL|request header|request|response|상태 코드|
