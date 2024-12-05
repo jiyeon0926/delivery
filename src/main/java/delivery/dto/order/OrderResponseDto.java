@@ -20,12 +20,15 @@ public class OrderResponseDto {
 
     private final String status;
 
-    public OrderResponseDto(Long id, String userName, String storeName, String menuName, BigDecimal price, OrderStatus status) {
+    private final String rejectReason;
+
+    public OrderResponseDto(Long id, String userName, String storeName, String menuName, BigDecimal price, OrderStatus status, String rejectReason) {
         this.id = id;
         this.userName = userName;
         this.storeName = storeName;
         this.menuName = menuName;
         this.price = price;
         this.status = status.getDescription();
+        this.rejectReason = rejectReason;
     }
 }

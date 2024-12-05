@@ -1,5 +1,6 @@
 package delivery.controller.order;
 
+import delivery.dto.order.OrderRejectRequestDto;
 import delivery.dto.order.OrderRequestDto;
 import delivery.dto.order.OrderResponseDto;
 import delivery.service.order.OrderService;
@@ -87,4 +88,15 @@ public class OrderController {
         return new ResponseEntity<>(orderResponseDto, HttpStatus.OK);
     }
 
+    //주문 거절
+    @PatchMapping("/{orderId}/reject")
+    public ResponseEntity<OrderResponseDto> rejectOrder(@PathVariable Long orderId, @RequestBody OrderRejectRequestDto dto, HttpServletRequest request){
+
+        HttpSession session = request.getSession(false);
+        Long loginUser = (Long) session.getAttribute("LOGIN_USER");
+
+        OrderResponseDto OrderResponseDto = orderService.rejectOrder(loginUser, orderId, dto.getReason());
+
+        return new ResponseEntity<>(OrderResponseDto, HttpStatus.OK);
+    }
 }

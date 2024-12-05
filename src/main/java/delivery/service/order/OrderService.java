@@ -59,7 +59,8 @@ public class OrderService {
                 order.getStore().getStoreName(),
                 order.getMenu().getName(),
                 order.getMenu().getPrice(),
-                order.getStatus());
+                order.getStatus(),
+                order.getRejectReason());
     }
 
     //주문 전체 조회
@@ -77,7 +78,10 @@ public class OrderService {
                     order.getStore().getStoreName(),
                     order.getMenu().getName(),
                     order.getMenu().getPrice(),
-                    order.getStatus()));
+                    order.getStatus(),
+                    order.getRejectReason()
+                    )
+            );
         }else{  //사장님의 경우
             Page<Order> orderPage = orderRepository.findOrdersByStoreId(storeId, pageable);
             return orderPage.map(order -> new OrderResponseDto(
@@ -86,7 +90,10 @@ public class OrderService {
                     order.getStore().getStoreName(),
                     order.getMenu().getName(),
                     order.getMenu().getPrice(),
-                    order.getStatus()));
+                    order.getStatus(),
+                    order.getRejectReason()
+                    )
+            );
         }
     }
 
@@ -105,7 +112,9 @@ public class OrderService {
                 order.getStore().getStoreName(),
                 order.getMenu().getName(),
                 order.getMenu().getPrice(),
-                order.getStatus());
+                order.getStatus(),
+                order.getRejectReason()
+        );
     }
 
 
@@ -119,6 +128,11 @@ public class OrderService {
             throw new CustomException(ErrorCode.NOT_OWNER_UPDATE);
         }
 
+        // 이미 거절된 주문인지 확인
+        if (Objects.equals(OrderStatus.ORDER_REJECTED, order.getStatus())) {
+            throw new CustomException(ErrorCode.ALREADY_REJECT_ORDER);
+        }
+
         //현재 주문상태를 다음 상태로 변경
         OrderStatus nextStatus = order.getStatus().transitionStatus(order.getStatus());
         order.setStatus(nextStatus);
@@ -129,7 +143,9 @@ public class OrderService {
                 order.getStore().getStoreName(),
                 order.getMenu().getName(),
                 order.getMenu().getPrice(),
-                order.getStatus());
+                order.getStatus(),
+                order.getRejectReason()
+        );
     }
 
 
@@ -140,5 +156,33 @@ public class OrderService {
         }else{
             return !now.isBefore(store.getOpenTime()) || now.isBefore(store.getCloseTime());  //가게 운영 시간에 맞으면 true
         }
+    }
+
+    public OrderResponseDto rejectOrder(Long userId, Long orderId, String reason) {
+
+        Order order = orderRepository.findOrderByIdOrElseThrow(orderId);
+
+        //가게 주인이 아닌 경우 수정 불가
+        if(!order.getStore().getUser().getId().equals(userId)){
+            throw new CustomException(ErrorCode.NOT_OWNER_UPDATE);
+        }
+
+        // 이미 거절된 주문인지 확인
+        if (Objects.equals(OrderStatus.ORDER_REJECTED, order.getStatus())) {
+            throw new CustomException(ErrorCode.ALREADY_REJECT_ORDER);
+        }
+
+        // 주문 거절 처리
+        order.orderReject(reason);
+
+        return new OrderResponseDto(
+                order.getId(),
+                order.getUser().getName(),
+                order.getStore().getStoreName(),
+                order.getMenu().getName(),
+                order.getMenu().getPrice(),
+                order.getStatus(),
+                order.getRejectReason()
+        );
     }
 }
