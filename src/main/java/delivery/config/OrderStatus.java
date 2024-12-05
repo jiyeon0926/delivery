@@ -6,8 +6,7 @@ public enum OrderStatus {
     COOKING("조리 중"),
     COOKING_COMPLETED("조리 완료"),
     DELIVERY_PROGRESS("배달 중"),
-    DELIVERY_COMPLETED("배달 완료"),
-    COMPLETED("완료된 주문");
+    DELIVERY_COMPLETED("배달 완료");
 
     private final String description;
 
@@ -28,10 +27,8 @@ public enum OrderStatus {
             return OrderStatus.COOKING_COMPLETED;
         } else if (status == OrderStatus.COOKING_COMPLETED) {
             return OrderStatus.DELIVERY_PROGRESS;
-        } else if (status == OrderStatus.DELIVERY_PROGRESS) {
+        } else {
             return OrderStatus.DELIVERY_COMPLETED;
-        }else{
-            return OrderStatus.COMPLETED;
         }
     }
 }
