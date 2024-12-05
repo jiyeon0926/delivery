@@ -1,10 +1,12 @@
 package delivery.dto.store;
 
+import delivery.entity.store.Store;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class StoreMenuResponseDto {
@@ -23,5 +25,20 @@ public class StoreMenuResponseDto {
         this.closeTime = closeTime;
         this.minOrderPrice = minOrderPrice;
         this.menus = menus;
+    }
+
+    public static StoreMenuResponseDto toDto(Store store) {
+        List<MenuDto> menus = store.getMenus().stream()
+                .map(menu -> new MenuDto(menu.getName(), menu.getPrice(), menu.getDescription()))
+                .collect(Collectors.toList());
+
+        return new StoreMenuResponseDto(
+                store.getId(),
+                store.getStoreName(),
+                store.getOpenTime(),
+                store.getCloseTime(),
+                store.getMinOrderPrice(),
+                menus
+        );
     }
 }

@@ -1,6 +1,5 @@
 package delivery.service.store;
 
-import delivery.dto.store.MenuDto;
 import delivery.dto.store.StoreMenuResponseDto;
 import delivery.dto.store.StoreResponseDto;
 import delivery.entity.store.Store;
@@ -13,7 +12,6 @@ import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,13 +32,7 @@ public class StoreService {
         Store store = storeRepository.findStoreByIdAndUserIdOrElseThrow(storeId, userId);
         store.updateStore(storeName, openTime, closeTime, minOrderPrice);
 
-        return new StoreResponseDto(
-                store.getId(),
-                store.getUserId(),
-                store.getStoreName(),
-                store.getOpenTime(),
-                store.getCloseTime(),
-                store.getMinOrderPrice());
+        return StoreResponseDto.toDto(store);
     }
 
     @Transactional
@@ -57,17 +49,7 @@ public class StoreService {
     public StoreMenuResponseDto findMenuByStoreId(Long storeId) {
         Store store = storeRepository.findMenuByStoreIdOrElseThrow(storeId);
 
-        List<MenuDto> menuDtos = store.getMenus().stream()
-                .map(menu -> new MenuDto(menu.getName(), menu.getPrice(), menu.getDescription()))
-                .collect(Collectors.toList());
-
-        return new StoreMenuResponseDto(
-                store.getId(),
-                store.getStoreName(),
-                store.getOpenTime(),
-                store.getCloseTime(),
-                store.getMinOrderPrice(),
-                menuDtos);
+        return StoreMenuResponseDto.toDto(store);
     }
 
     public Optional<Integer> countStore(Long userId) {
