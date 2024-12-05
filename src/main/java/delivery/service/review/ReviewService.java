@@ -35,16 +35,15 @@ public class ReviewService {
         if (!Objects.equals(userId,order.getUser().getId())) {
             throw new CustomException(ErrorCode.NOT_OWNER_ORDER);
         }
-
-
+        //빈칸
         if(requestDto.getComment() == null || requestDto.getComment().isEmpty()) {
             throw new CustomException(ErrorCode.EMPTY);
         }
-
+        //별점오류
         if(requestDto.getRating() < 1 || requestDto.getRating() > 5) {
             throw new CustomException(ErrorCode.STAR_OVER);
         }
-
+        //배달완료에서만 작성
         if (order.getStatus() != OrderStatus.DELIVERY_COMPLETED){
             throw new CustomException(ErrorCode.NOT_DELIVERY_COMPLETED);
         }
@@ -64,7 +63,7 @@ public class ReviewService {
 //일반정렬
     public List<ReviewResponseDto> getReviews(long storeId) {
 
-        List<Review> reviewList = reviewRepository.findAllByStoreIdOrderByModifiedAtDesc( storeId);
+        List<Review> reviewList = reviewRepository.findAllByStoreIdOrderByModifiedAtDesc(storeId);
         List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
 
         for (Review review : reviewList) {
@@ -90,6 +89,18 @@ public class ReviewService {
 
         return reviewResponseDtoList;
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
 

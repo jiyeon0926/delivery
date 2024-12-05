@@ -1,6 +1,7 @@
 package delivery.entity.review;
 
 import delivery.entity.Base;
+import delivery.entity.menu.Menu;
 import delivery.entity.order.Order;
 import delivery.entity.user.User;
 import jakarta.persistence.*;
@@ -35,6 +36,10 @@ public class Review extends Base {
 
     @Column(name ="store_id")
     private Long storeId;
+
+    @ManyToOne
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
