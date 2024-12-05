@@ -24,7 +24,7 @@ public class Review extends Base {
     @Column(name = "reivew_id")
     private Long id;
 
-    @Column(name = "comment", nullable = false)
+    @Column(name = "comment", nullable = false, columnDefinition = "text")
     private String comment;
 
     @Column(name = "rating", nullable = false)
