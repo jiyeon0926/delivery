@@ -45,7 +45,8 @@ public class StoreService {
     @Transactional
     public StoreResponseDto updateStore(Long storeId, Long userId, String storeName, LocalTime openTime, LocalTime closeTime, BigDecimal minOrderPrice) {
         Optional<Store> store = storeRepository.findStoreByIdAndUserId(storeId, userId);
-        store.orElseThrow(()-> new CustomException(ErrorCode.NOT_OWNER_UPDATE));
+        notFoundStore(store);
+
         store.get().updateStore(storeName, openTime, closeTime, minOrderPrice);
 
         return StoreResponseDto.toDto(store.get());
@@ -54,11 +55,7 @@ public class StoreService {
     @Transactional
     public void deleteStore(Long storeId, Long userId) {
         Optional<Store> store = storeRepository.findStoreByIdAndUserId(storeId, userId);
-        store.orElseThrow(()-> new CustomException(ErrorCode.STORE_NOT_FOUND));
-
-        if (store.get().isDivision() == false) {
-            throw new CustomException(ErrorCode.STORE_NOT_FOUND);
-        }
+        store.orElseThrow(() -> new CustomException(ErrorCode.NOT_OWNER_DELETE));
 
         store.get().updateDivision();
         storeRepository.save(store.get());
@@ -69,21 +66,24 @@ public class StoreService {
     }
 
     public StoreMenuResponseDto findMenuByStoreId(Long storeId) {
-        Store store = storeRepository.findMenuByStoreId(storeId);
-        Optional<Store> findStore = storeRepository.findById(storeId);
+        Store menu = storeRepository.findMenuByStoreId(storeId);
+        Optional<Store> store = storeRepository.findById(storeId);
+        notFoundStore(store);
 
-        if (findStore.get().isDivision() == true && findStore.get().getMenus().isEmpty()) {
+        if (menu == null && !store.isEmpty()) {
             throw new CustomException(ErrorCode.MENU_NOT_FOUND);
         }
 
-        if (findStore.get().isDivision() == false || findStore.isEmpty()) {
-            throw new CustomException(ErrorCode.STORE_NOT_FOUND);
-        }
-
-        return StoreMenuResponseDto.toDto(store);
+        return StoreMenuResponseDto.toDto(menu);
     }
 
     public Store findStoreById(Long storeId) {
         return storeRepository.findStoreById(storeId);
+    }
+
+    private static void notFoundStore(Optional<Store> store) {
+        if (store == null || store.isEmpty() || !store.get().isDivision()) {
+            throw new CustomException(ErrorCode.STORE_NOT_FOUND);
+        }
     }
 }
