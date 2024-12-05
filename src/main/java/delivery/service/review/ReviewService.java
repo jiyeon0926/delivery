@@ -47,7 +47,10 @@ public class ReviewService {
         if (order.getStatus() != OrderStatus.DELIVERY_COMPLETED){
             throw new CustomException(ErrorCode.NOT_DELIVERY_COMPLETED);
         }
-
+        //리뷰 1개만 작성가능
+        if(reviewRepository.existsByOrderId(orderId)){
+            throw new CustomException(ErrorCode.REVIEW_COMPLETED);
+        }
 
         Review newReview = Review.builder()
                 .comment(requestDto.getComment())
