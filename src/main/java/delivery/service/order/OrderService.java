@@ -47,6 +47,10 @@ public class OrderService {
         if(Objects.equals(user.getRole(), UserStatus.OWNER.toString())){
             throw new CustomException(ErrorCode.UNAUTHORIZED_OWNER_ORDER);
         }
+        //가게에 맞는 메뉴인지 확인
+        if(!menu.getStore().getId().equals(store.getId())){
+            throw new CustomException(ErrorCode.MENU_NOT_FOUND);
+        }
 
         Order order = new Order(user, store, menu);
         order.setStatus(OrderStatus.ORDER_COMPLETED);
