@@ -1,8 +1,6 @@
 package delivery.repository.user;
 
 import delivery.entity.user.User;
-import delivery.error.errorcode.ErrorCode;
-import delivery.error.exception.CustomException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

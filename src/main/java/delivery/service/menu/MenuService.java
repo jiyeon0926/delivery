@@ -6,7 +6,6 @@ import delivery.entity.menu.Menu;
 import delivery.entity.store.Store;
 import delivery.error.errorcode.ErrorCode;
 import delivery.error.exception.CustomException;
-import delivery.repository.store.StoreRepository;
 import delivery.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

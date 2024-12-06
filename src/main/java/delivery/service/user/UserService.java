@@ -7,14 +7,11 @@ import delivery.dto.user.UserResponseDto;
 import delivery.entity.user.User;
 import delivery.error.errorcode.ErrorCode;
 import delivery.error.exception.CustomException;
-import delivery.repository.store.StoreRepository;
 import delivery.repository.user.UserRepository;
 import delivery.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
