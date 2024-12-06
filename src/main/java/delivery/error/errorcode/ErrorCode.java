@@ -19,6 +19,7 @@ public enum ErrorCode {
     NOT_DELETE_STORE(BAD_REQUEST, "남아있는 가게가 존재합니다. 가게 폐업 후 탈퇴해주세요"),
     STAR_OVER(BAD_REQUEST, "1~5만 입력 가능합니다."),
     EMPTY(BAD_REQUEST, "내용을 입력해주세요."),
+    INVALID_ROLE(BAD_REQUEST, "유효하지 않은 역할입니다."),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     UNAUTHORIZED_PASSWORD(UNAUTHORIZED, "password 가 일치하지 않습니다."),
