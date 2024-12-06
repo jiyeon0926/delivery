@@ -42,14 +42,8 @@ public class ReviewController {
     public ResponseEntity<List<ReviewResponseDto>> getReviews(@PathVariable Long storeId,
                                                               HttpServletRequest request) {
         HttpSession session = request.getSession(false); // 세션 가져오기
-        if (session == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 세션 없을 경우 Unauthorized 응답
-        }
-
         Long userId = (Long) session.getAttribute("LOGIN_USER"); // 로그인된 사용자 ID 가져오기
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 로그인 정보 없을 경우 Unauthorized 응답
-        }
+
      return ResponseEntity.ok(reviewService.getReviews(storeId, userId));
     }
 
