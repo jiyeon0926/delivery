@@ -86,4 +86,10 @@ public class StoreService {
             throw new CustomException(ErrorCode.STORE_NOT_FOUND);
         }
     }
+
+    //userId로 해당 유저의 가게 개수를 확인
+    public Integer findCountByUserId(Long userId) {
+        return storeRepository.countByUserId(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+    }
 }

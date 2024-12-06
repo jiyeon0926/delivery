@@ -2,12 +2,14 @@ package delivery.service.user;
 
 import delivery.config.PasswordEncoder;
 import delivery.config.PasswordValidation;
+import delivery.config.UserStatus;
 import delivery.dto.user.UserResponseDto;
 import delivery.entity.user.User;
 import delivery.error.errorcode.ErrorCode;
 import delivery.error.exception.CustomException;
 import delivery.repository.store.StoreRepository;
 import delivery.repository.user.UserRepository;
+import delivery.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +22,8 @@ public class UserService {
 
     private final PasswordValidation passwordValidation;
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
-    private final StoreRepository storeRepository;
+    private final StoreService storeService;
 
     //유저 생성
     public UserResponseDto signup(String name, String email, String password, String role) {
@@ -35,6 +36,17 @@ public class UserService {
         if(!passwordValidation.isValidPassword(password)) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_PASSWORD_FORM);
         }
+        //role값 검증
+        boolean isValidRole = false;
+        for(UserStatus userStatus : UserStatus.values()) {
+            if(userStatus.name().equals(role)) {
+                isValidRole = true;
+                break;
+            }
+        }
+        if(!isValidRole) {
+            throw new CustomException(ErrorCode.INVALID_ROLE);
+        }
 
         User user = new User(name, email, passwordEncoder.encode(password), role, true);
         User savedUser = userRepository.save(user);
@@ -46,7 +58,7 @@ public class UserService {
     @Transactional
     public void updatePassword(Long id, String oldPassword, String newPassword) {
 
-        User user = userRepository.findUserByIdOrElseThrow(id);
+        User user = findUserByIdOrElseThrow(id);
 
         // 기존 비밀번호 불일치 시 변경 불가
         if(!passwordEncoder.matches(oldPassword, user.getPassword())) {
@@ -68,15 +80,15 @@ public class UserService {
     @Transactional
     public void deleteUser(Long id, String password) {
 
-        User user = userRepository.findUserByIdOrElseThrow(id);
+        User user = findUserByIdOrElseThrow(id);
 
         //패스워드 불일치 시
         if(!passwordEncoder.matches(password, user.getPassword())) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_PASSWORD);
         }
-        Optional<Integer> count = storeRepository.countByUserId(id);
-
-        if (count.isPresent()) {
+        //가게가 1개 이상 존재하면 탈퇴 불가
+        Integer count = storeService.findCountByUserId(id);
+        if (count > 0) {
             throw new CustomException(ErrorCode.NOT_DELETE_STORE);
         }
 
@@ -86,5 +98,18 @@ public class UserService {
 
     public String findRoleByUserId(Long userId) {
         return userRepository.findRoleByUserId(userId);
+    }
+
+    //email로 유저를 찾음
+    public User findUserByEmailOrElseThrow(String email) {
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.ID_NOT_FOUND));
+
+    }
+
+    //userId로 유저를 찾음
+    public User findUserByIdOrElseThrow(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.ID_NOT_FOUND));
     }
 }
