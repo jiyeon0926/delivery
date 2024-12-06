@@ -51,6 +51,10 @@ public class OrderService {
         if(!menu.getStore().getId().equals(store.getId())){
             throw new CustomException(ErrorCode.MENU_NOT_FOUND);
         }
+        //최소 주문금액을 넘는지 확인
+        if(menu.getPrice().compareTo(store.getMinOrderPrice()) < 0){
+            throw new CustomException(ErrorCode.UNAUTHORIZED_MIN_ORDER_PRICE);
+        }
 
         Order order = new Order(user, store, menu);
         order.setStatus(OrderStatus.ORDER_COMPLETED);

@@ -33,6 +33,7 @@ public enum ErrorCode {
     UNAUTHORIZED_OWNER_ORDER(UNAUTHORIZED, "사장님은 주문할 수 없습니다."),
     NOT_DELIVERY_COMPLETED(UNAUTHORIZED,"배달완료되지 않은 주문입니다."),
     REVIEW_COMPLETED(UNAUTHORIZED,"이미 리뷰가 작성된 주문입니다."),
+    UNAUTHORIZED_MIN_ORDER_PRICE(UNAUTHORIZED, "최소 주문금액을 넘겨야 합니다."),
 
 
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
