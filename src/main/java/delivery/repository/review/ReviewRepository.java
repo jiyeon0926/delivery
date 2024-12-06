@@ -12,9 +12,11 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
 
-   List<Review> findAllByStoreIdAndRatingBetweenOrderByModifiedAtDesc(Long storeId, int minRating, int maxRating);
-    List<Review> findAllByStoreIdOrderByModifiedAtDesc(Long storeId);
+  List<Review> findAllByStoreIdAndRatingBetweenAndUserIdNotOrderByModifiedAtDesc(Long storeId, int minRating, int maxRating, Long userId);
+
+    List<Review> findAllByStoreIdAndUserIdNotOrderByModifiedAtDesc(Long storeId, Long userId);
 
     @Query("SELECT CASE WHEN COUNT(r) > 0 THEN TRUE ELSE FALSE END FROM Review r WHERE r.order.id = :orderId")
     boolean existsByOrderId(@Param("orderId") Long orderId);
+
 }

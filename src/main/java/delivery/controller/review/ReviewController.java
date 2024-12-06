@@ -41,10 +41,16 @@ public class ReviewController {
     @GetMapping("/stores/{storeId}/reviews")
     public ResponseEntity<List<ReviewResponseDto>> getReviews(@PathVariable Long storeId,
                                                               HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        Long loginUser = (Long) session.getAttribute("LOGIN_USER");
+        HttpSession session = request.getSession(false); // 세션 가져오기
+        if (session == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 세션 없을 경우 Unauthorized 응답
+        }
 
-     return ResponseEntity.ok(reviewService.getReviews(storeId));
+        Long userId = (Long) session.getAttribute("LOGIN_USER"); // 로그인된 사용자 ID 가져오기
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 로그인 정보 없을 경우 Unauthorized 응답
+        }
+     return ResponseEntity.ok(reviewService.getReviews(storeId, userId));
     }
 
     //별점조회
@@ -55,8 +61,8 @@ public class ReviewController {
             @RequestParam int maxRating,
             HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        Long loginUser = (Long) session.getAttribute("LOGIN_USER");
+        Long userId = (Long) session.getAttribute("LOGIN_USER");
 
-        return ResponseEntity.ok(reviewService.getReviewByStar(storeId, minRating, maxRating));
+        return ResponseEntity.ok(reviewService.getReviewByStar(storeId, minRating, maxRating, userId));
     }
 }
