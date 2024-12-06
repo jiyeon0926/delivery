@@ -5,7 +5,6 @@ import delivery.dto.user.LoginResponseDto;
 import delivery.entity.user.User;
 import delivery.error.errorcode.ErrorCode;
 import delivery.error.exception.CustomException;
-import delivery.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +12,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LoginService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
     public LoginResponseDto login(String email, String password) {
 
-        User user = userRepository.findUserByEmailOrElseThrow(email);
+        User user = userService.findUserByEmailOrElseThrow(email);
 
         //비밀번호 검증
         if (!passwordEncoder.matches(password, user.getPassword())) {

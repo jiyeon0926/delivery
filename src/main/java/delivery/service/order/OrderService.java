@@ -9,10 +9,10 @@ import delivery.entity.store.Store;
 import delivery.entity.user.User;
 import delivery.error.errorcode.ErrorCode;
 import delivery.error.exception.CustomException;
-import delivery.repository.menu.MenuRepository;
 import delivery.repository.order.OrderRepository;
-import delivery.repository.store.StoreRepository;
-import delivery.repository.user.UserRepository;
+import delivery.service.menu.MenuService;
+import delivery.service.store.StoreService;
+import delivery.service.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,16 +27,16 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class OrderService {
 
-    private final UserRepository userRepository;
-    private final StoreRepository storeRepository;
-    private final MenuRepository menuRepository;
+    private final UserService userService;
+    private final StoreService storeService;
+    private final MenuService menuService;
     private final OrderRepository orderRepository;
 
     //주문 생성
     public OrderResponseDto createOrder(Long userId, Long storeId, Long menuId) {
-        User user = userRepository.findUserByIdOrElseThrow(userId);  //사용자 확인
-        Store store = storeRepository.findStoreById(storeId);  //가게 확인
-        Menu menu = menuRepository.findMenuByIdOrElseThrow(menuId);  //메뉴 확인
+        User user = userService.findUserByIdOrElseThrow(userId);  //사용자 확인
+        Store store = storeService.findStoreById(storeId);  //가게 확인
+        Menu menu = menuService.findMenuByIdOrElseThrow(menuId);  //메뉴 확인
 
         LocalTime now = LocalTime.now();
         //오픈 시간이 아닐 경우
@@ -47,6 +47,14 @@ public class OrderService {
         if(Objects.equals(user.getRole(), UserStatus.OWNER.toString())){
             throw new CustomException(ErrorCode.UNAUTHORIZED_OWNER_ORDER);
         }
+        //가게에 맞는 메뉴인지 확인
+        if(!menu.getStore().getId().equals(store.getId())){
+            throw new CustomException(ErrorCode.MENU_NOT_FOUND);
+        }
+        //최소 주문금액을 넘는지 확인
+        if(menu.getPrice().compareTo(store.getMinOrderPrice()) < 0){
+            throw new CustomException(ErrorCode.UNAUTHORIZED_MIN_ORDER_PRICE);
+        }
 
         Order order = new Order(user, store, menu);
         order.setStatus(OrderStatus.ORDER_COMPLETED);
@@ -55,9 +63,9 @@ public class OrderService {
 
         return new OrderResponseDto(
                 order.getId(),
-                order.getUser().getName(),
-                order.getStore().getStoreName(),
-                order.getMenu().getName(),
+                order.getUser().getId(),
+                order.getStore().getId(),
+                order.getMenu().getId(),
                 order.getMenu().getPrice(),
                 order.getStatus(),
                 order.getRejectReason());
@@ -66,7 +74,7 @@ public class OrderService {
     //주문 전체 조회
     public Page<OrderResponseDto> findAllOrder(Long userId, Long storeId, int page, int size) {
 
-        User user = userRepository.findUserByIdOrElseThrow(userId);
+        User user = userService.findUserByIdOrElseThrow(userId);
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -74,9 +82,9 @@ public class OrderService {
             Page<Order> orderPage = orderRepository.findOrdersByUserId(userId, pageable);
             return orderPage.map(order -> new OrderResponseDto(
                     order.getId(),
-                    order.getUser().getName(),
-                    order.getStore().getStoreName(),
-                    order.getMenu().getName(),
+                    order.getUser().getId(),
+                    order.getStore().getId(),
+                    order.getMenu().getId(),
                     order.getMenu().getPrice(),
                     order.getStatus(),
                     order.getRejectReason()
@@ -86,9 +94,9 @@ public class OrderService {
             Page<Order> orderPage = orderRepository.findOrdersByStoreId(storeId, pageable);
             return orderPage.map(order -> new OrderResponseDto(
                     order.getId(),
-                    order.getUser().getName(),
-                    order.getStore().getStoreName(),
-                    order.getMenu().getName(),
+                    order.getUser().getId(),
+                    order.getStore().getId(),
+                    order.getMenu().getId(),
                     order.getMenu().getPrice(),
                     order.getStatus(),
                     order.getRejectReason()
@@ -108,9 +116,9 @@ public class OrderService {
 
         return new OrderResponseDto(
                 order.getId(),
-                order.getUser().getName(),
-                order.getStore().getStoreName(),
-                order.getMenu().getName(),
+                order.getUser().getId(),
+                order.getStore().getId(),
+                order.getMenu().getId(),
                 order.getMenu().getPrice(),
                 order.getStatus(),
                 order.getRejectReason()
@@ -121,7 +129,7 @@ public class OrderService {
     //주문 상태 수정
     @Transactional
     public OrderResponseDto updateStatus(Long userId, Long orderId){
-        Order order = orderRepository.findOrderByIdOrElseThrow(orderId);
+        Order order = findOrderByIdOrElseThrow(orderId);
 
         //가게 주인이 아닌 경우 수정 불가
         if(!order.getStore().getUser().getId().equals(userId)){
@@ -139,9 +147,9 @@ public class OrderService {
 
         return new OrderResponseDto(
                 order.getId(),
-                order.getUser().getName(),
-                order.getStore().getStoreName(),
-                order.getMenu().getName(),
+                order.getUser().getId(),
+                order.getStore().getId(),
+                order.getMenu().getId(),
                 order.getMenu().getPrice(),
                 order.getStatus(),
                 order.getRejectReason()
@@ -160,7 +168,7 @@ public class OrderService {
 
     public OrderResponseDto rejectOrder(Long userId, Long orderId, String reason) {
 
-        Order order = orderRepository.findOrderByIdOrElseThrow(orderId);
+        Order order = findOrderByIdOrElseThrow(orderId);
 
         //가게 주인이 아닌 경우 수정 불가
         if(!order.getStore().getUser().getId().equals(userId)){
@@ -177,12 +185,18 @@ public class OrderService {
 
         return new OrderResponseDto(
                 order.getId(),
-                order.getUser().getName(),
-                order.getStore().getStoreName(),
-                order.getMenu().getName(),
+                order.getUser().getId(),
+                order.getStore().getId(),
+                order.getMenu().getId(),
                 order.getMenu().getPrice(),
                 order.getStatus(),
                 order.getRejectReason()
         );
+    }
+
+    //orderId로 주문을 찾음
+    public Order findOrderByIdOrElseThrow(Long orderId){
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
     }
 }
