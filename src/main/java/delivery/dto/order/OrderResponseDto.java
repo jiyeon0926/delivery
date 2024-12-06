@@ -10,11 +10,11 @@ public class OrderResponseDto {
 
     private final Long id;
 
-    private final String userName;
+    private final Long userId;
 
-    private final String storeName;
+    private final Long storeId;
 
-    private final String menuName;
+    private final Long menuId;
 
     private final BigDecimal price;
 
@@ -22,11 +22,11 @@ public class OrderResponseDto {
 
     private final String rejectReason;
 
-    public OrderResponseDto(Long id, String userName, String storeName, String menuName, BigDecimal price, OrderStatus status, String rejectReason) {
+    public OrderResponseDto(Long id, Long userId, Long storeId, Long menuId, BigDecimal price, OrderStatus status, String rejectReason) {
         this.id = id;
-        this.userName = userName;
-        this.storeName = storeName;
-        this.menuName = menuName;
+        this.userId = userId;
+        this.storeId = storeId;
+        this.menuId = menuId;
         this.price = price;
         this.status = status.getDescription();
         this.rejectReason = rejectReason;
