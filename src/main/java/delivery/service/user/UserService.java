@@ -8,8 +8,8 @@ import delivery.dto.user.UserResponseDto;
 import delivery.entity.user.User;
 import delivery.error.errorcode.ErrorCode;
 import delivery.error.exception.CustomException;
-import delivery.repository.store.StoreRepository;
 import delivery.repository.user.UserRepository;
+import delivery.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +24,7 @@ public class UserService {
     private final EmailValidation emailValidation;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final StoreRepository storeRepository;
+    private final StoreService storeService;
 
     //유저 생성
     public UserResponseDto signup(String name, String email, String password, String role) {
@@ -92,8 +92,8 @@ public class UserService {
             throw new CustomException(ErrorCode.UNAUTHORIZED_PASSWORD);
         }
         //가게가 1개 이상 존재하면 탈퇴 불가
-        Optional<Integer> count = storeRepository.countByUserId(id);
-        if (count.isPresent()) {
+        Integer count = storeService.findCountByUserId(id);
+        if (count > 0) {
             throw new CustomException(ErrorCode.NOT_DELETE_STORE);
         }
 
@@ -116,5 +116,10 @@ public class UserService {
     public User findUserByIdOrElseThrow(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.ID_NOT_FOUND));
+    }
+
+    public String getRole(Long userId){
+        User user = findUserByIdOrElseThrow(userId);
+        return user.getRole();
     }
 }

@@ -3,7 +3,10 @@ package delivery.controller.store;
 import delivery.dto.store.StoreMenuResponseDto;
 import delivery.dto.store.StoreRequestDto;
 import delivery.dto.store.StoreResponseDto;
+import delivery.error.errorcode.ErrorCode;
+import delivery.error.exception.CustomException;
 import delivery.service.store.StoreService;
+import delivery.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -20,12 +23,17 @@ import java.util.List;
 public class StoreController {
 
     private final StoreService storeService;
+    private final UserService userService;
 
     // 가게 등록
     @PostMapping
     public ResponseEntity<StoreResponseDto> createStore(@Valid @RequestBody StoreRequestDto storeRequestDto,
                                                         HttpServletRequest servletRequest) {
         Long userId = getUserId(servletRequest);
+        String role = userService.getRole(userId);
+        if(role.equals("USER")) {
+            throw new CustomException(ErrorCode.NOT_REGISTER_STORE);
+        }
 
         return new ResponseEntity<>(storeService.createStore(userId, storeRequestDto.getStoreName(), storeRequestDto.getOpenTime(), storeRequestDto.getCloseTime(), storeRequestDto.getMinOrderPrice()), HttpStatus.CREATED);
     }

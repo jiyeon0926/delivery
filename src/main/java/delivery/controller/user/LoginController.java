@@ -2,6 +2,8 @@ package delivery.controller.user;
 
 import delivery.dto.user.LoginRequestDto;
 import delivery.dto.user.LoginResponseDto;
+import delivery.error.errorcode.ErrorCode;
+import delivery.error.exception.CustomException;
 import delivery.service.user.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -22,6 +24,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto dto, HttpServletRequest request) {
+
         LoginResponseDto loginResponseDto = loginService.login(dto.getEmail(), dto.getPassword());
 
         HttpSession session = request.getSession();

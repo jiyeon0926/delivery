@@ -21,20 +21,14 @@ import java.util.Optional;
 public class StoreService {
 
     private final StoreRepository storeRepository;
-    private final UserService userService;
 
     @Transactional
     public StoreResponseDto createStore(Long userId, String storeName, LocalTime openTime, LocalTime closeTime, BigDecimal minOrderPrice) {
         Store store = new Store(userId, storeName, openTime, closeTime, minOrderPrice);
         Optional<Integer> count = storeRepository.countByUserId(userId);
-        String role = userService.findRoleByUserId(userId);
 
         if (count.isPresent() && count.get().intValue() == 3) {
             throw new CustomException(ErrorCode.STORE_COUNT_OVER);
-        }
-
-        if (role.equals("USER")) {
-            throw new CustomException(ErrorCode.NOT_REGISTER_STORE);
         }
 
         Store savedStore = storeRepository.save(store);
