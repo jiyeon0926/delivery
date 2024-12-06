@@ -1,5 +1,6 @@
 package delivery.service.user;
 
+import delivery.config.EmailValidation;
 import delivery.config.PasswordEncoder;
 import delivery.config.PasswordValidation;
 import delivery.config.UserStatus;
@@ -7,20 +8,23 @@ import delivery.dto.user.UserResponseDto;
 import delivery.entity.user.User;
 import delivery.error.errorcode.ErrorCode;
 import delivery.error.exception.CustomException;
+import delivery.repository.store.StoreRepository;
 import delivery.repository.user.UserRepository;
-import delivery.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final PasswordValidation passwordValidation;
+    private final EmailValidation emailValidation;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final StoreService storeService;
+    private final StoreRepository storeRepository;
 
     //유저 생성
     public UserResponseDto signup(String name, String email, String password, String role) {
@@ -28,6 +32,10 @@ public class UserService {
         //같은 아이디가 존재할 시
         if(userRepository.findUserByEmail(email).isPresent()) {
             throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
+        }
+        //이메일 형식이 다를 시
+        if(!emailValidation.isVaildEmail(email)) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_EMAIL_FORM);
         }
         //비밀번호 형식이 다를 시
         if(!passwordValidation.isValidPassword(password)) {
@@ -84,8 +92,8 @@ public class UserService {
             throw new CustomException(ErrorCode.UNAUTHORIZED_PASSWORD);
         }
         //가게가 1개 이상 존재하면 탈퇴 불가
-        Integer count = storeService.findCountByUserId(id);
-        if (count > 0) {
+        Optional<Integer> count = storeRepository.countByUserId(id);
+        if (count.isPresent()) {
             throw new CustomException(ErrorCode.NOT_DELETE_STORE);
         }
 

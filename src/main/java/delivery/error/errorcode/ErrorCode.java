@@ -22,8 +22,9 @@ public enum ErrorCode {
     INVALID_ROLE(BAD_REQUEST, "유효하지 않은 역할입니다."),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
-    UNAUTHORIZED_PASSWORD(UNAUTHORIZED, "password 가 일치하지 않습니다."),
-    UNAUTHORIZED_PASSWORD_FORM(UNAUTHORIZED, "password 형식이 맞지 않습니다."),
+    UNAUTHORIZED_PASSWORD(UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
+    UNAUTHORIZED_PASSWORD_FORM(UNAUTHORIZED, "비밀번호 형식이 맞지 않습니다."),
+    UNAUTHORIZED_EMAIL_FORM(UNAUTHORIZED, "이메일 형식이 맞지 않습니다."),
     NOT_OWNER_CRUD(UNAUTHORIZED,"가게 운영자만 메뉴를 관리 할 수 있습니다."),
     NOT_OWNER_UPDATE(UNAUTHORIZED,"가게 운영자만 수정할 수 있습니다."),
     NOT_OWNER_DELETE(UNAUTHORIZED,"가게 운영자만 폐업할 수 있습니다."),

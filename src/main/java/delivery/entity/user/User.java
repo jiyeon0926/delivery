@@ -2,6 +2,7 @@ package delivery.entity.user;
 
 import delivery.entity.Base;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 
 @Getter
