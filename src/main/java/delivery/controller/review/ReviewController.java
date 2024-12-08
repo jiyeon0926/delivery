@@ -44,7 +44,10 @@ public class ReviewController {
 
         Long userId = getUserId(request);
 
-        return ResponseEntity.ok(reviewService.getReviews(storeId, userId));
+        // 서비스 호출 및 결과 반환
+        List<ReviewResponseDto> reviews = reviewService.getReviews(storeId, userId);
+
+        return new ResponseEntity<>(reviews, HttpStatus.OK);
     }
 
     //별점조회
@@ -56,7 +59,10 @@ public class ReviewController {
 
         Long userId = getUserId(request);
 
-        return ResponseEntity.ok(reviewService.getReviewByStar(storeId, minRating, maxRating, userId));
+        // 서비스 호출 및 결과 반환
+        List<ReviewResponseDto> reviews = reviewService.getReviewByStar(storeId, minRating, maxRating, userId);
+
+        return new ResponseEntity<>(reviews, HttpStatus.OK);
     }
 
     private static Long getUserId(HttpServletRequest request) {

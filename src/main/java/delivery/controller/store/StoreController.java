@@ -32,12 +32,20 @@ public class StoreController {
         Long userId = getUserId(servletRequest);
 
         String role = userService.getRole(userId);
-
         if(role.equals("USER")) {
             throw new CustomException(ErrorCode.NOT_REGISTER_STORE);
         }
 
-        return new ResponseEntity<>(storeService.createStore(userId, storeRequestDto.getStoreName(), storeRequestDto.getOpenTime(), storeRequestDto.getCloseTime(), storeRequestDto.getMinOrderPrice()), HttpStatus.CREATED);
+        // 서비스 호출 및 결과 반환
+        StoreResponseDto storeResponseDto = storeService.createStore(
+                userId,
+                storeRequestDto.getStoreName(),
+                storeRequestDto.getOpenTime(),
+                storeRequestDto.getCloseTime(),
+                storeRequestDto.getMinOrderPrice()
+        );
+
+        return new ResponseEntity<>(storeResponseDto, HttpStatus.CREATED);
     }
 
     // 가게 수정
@@ -47,7 +55,17 @@ public class StoreController {
                                                         HttpServletRequest servletRequest) {
         Long userId = getUserId(servletRequest);
 
-        return ResponseEntity.ok().body(storeService.updateStore(storeId, userId, storeRequestDto.getStoreName(), storeRequestDto.getOpenTime(), storeRequestDto.getCloseTime(), storeRequestDto.getMinOrderPrice()));
+        // 서비스 호출 및 결과 반환
+        StoreResponseDto updatedStore = storeService.updateStore(
+                storeId,
+                userId,
+                storeRequestDto.getStoreName(),
+                storeRequestDto.getOpenTime(),
+                storeRequestDto.getCloseTime(),
+                storeRequestDto.getMinOrderPrice()
+        );
+
+        return new ResponseEntity<>(updatedStore, HttpStatus.OK);
     }
 
     // 가게 폐업
