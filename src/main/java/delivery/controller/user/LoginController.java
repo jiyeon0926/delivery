@@ -23,7 +23,8 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto dto, HttpServletRequest request) {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto dto,
+                                                  HttpServletRequest request) {
 
         LoginResponseDto loginResponseDto = loginService.login(dto.getEmail(), dto.getPassword());
 
@@ -39,7 +40,6 @@ public class LoginController {
         HttpSession session = request.getSession(false); // 현재 세션 조회
         if (session != null) {
             session.invalidate(); // 세션 무효화
-
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

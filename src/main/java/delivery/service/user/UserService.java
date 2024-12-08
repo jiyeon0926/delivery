@@ -14,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -101,15 +99,10 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public String findRoleByUserId(Long userId) {
-        return userRepository.findRoleByUserId(userId);
-    }
-
     //email로 유저를 찾음
     public User findUserByEmailOrElseThrow(String email) {
         return userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.ID_NOT_FOUND));
-
     }
 
     //userId로 유저를 찾음
