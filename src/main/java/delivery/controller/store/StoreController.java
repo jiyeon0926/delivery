@@ -30,7 +30,9 @@ public class StoreController {
     public ResponseEntity<StoreResponseDto> createStore(@Valid @RequestBody StoreRequestDto storeRequestDto,
                                                         HttpServletRequest servletRequest) {
         Long userId = getUserId(servletRequest);
+
         String role = userService.getRole(userId);
+
         if(role.equals("USER")) {
             throw new CustomException(ErrorCode.NOT_REGISTER_STORE);
         }
@@ -51,8 +53,10 @@ public class StoreController {
     // 가게 폐업
     @DeleteMapping("/{storeId}")
     public ResponseEntity<Void> deleteStore(@PathVariable Long storeId,
-                            HttpServletRequest servletRequest) {
+                                            HttpServletRequest servletRequest) {
+
         Long userId = getUserId(servletRequest);
+
         storeService.deleteStore(storeId, userId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -71,7 +75,9 @@ public class StoreController {
     }
 
     private static Long getUserId(HttpServletRequest servletRequest) {
+
         HttpSession session = servletRequest.getSession();
+
         Long userId = (Long) session.getAttribute("LOGIN_USER");
 
         return userId;

@@ -25,7 +25,9 @@ public class MenuController {
     private final MenuService menuservice;
 
     @PostMapping
-    public ResponseEntity<MenuResponseDto> createMenu(@PathVariable Long storeId, @RequestBody MenuRequestDto dto, HttpServletRequest request) {
+    public ResponseEntity<MenuResponseDto> createMenu(@PathVariable Long storeId,
+                                                      @RequestBody MenuRequestDto dto,
+                                                      HttpServletRequest request) {
 
         // 세션에서 로그인된 사용자 정보 가져오기
         Long userId = getUserId(request);
@@ -38,7 +40,10 @@ public class MenuController {
     }
 
     @PatchMapping("/{menuId}")
-    public ResponseEntity<MenuUpdateResponseDto> updateMenu(@PathVariable Long storeId, @PathVariable Long menuId, @RequestBody MenuRequestDto dto, HttpServletRequest request) {
+    public ResponseEntity<MenuUpdateResponseDto> updateMenu(@PathVariable Long storeId,
+                                                            @PathVariable Long menuId,
+                                                            @RequestBody MenuRequestDto dto,
+                                                            HttpServletRequest request) {
 
         // 세션에서 로그인된 사용자 정보 가져오기
         Long userId = getUserId(request);
@@ -51,7 +56,9 @@ public class MenuController {
     }
 
     @DeleteMapping("/{menuId}")
-    public ResponseEntity<Void> deleteMenu(@PathVariable Long storeId, @PathVariable Long menuId, HttpServletRequest request) {
+    public ResponseEntity<Void> deleteMenu(@PathVariable Long storeId,
+                                           @PathVariable Long menuId,
+                                           HttpServletRequest request) {
 
         // 세션에서 로그인된 사용자 정보 가져오기
         Long userId = getUserId(request);

@@ -67,20 +67,18 @@ public class ReviewService {
 
         return new ReviewResponseDto(newReview);
     }
-//일반정렬
+    //일반정렬
     public List<ReviewResponseDto> getReviews(long storeId, long userId) {
 
         List<Review> reviewList = reviewRepository.findAllByStoreIdAndUserIdNotOrderByModifiedAtDesc(storeId, userId);
         List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
 
-        for (Review review : reviewList) {
-            ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
-            reviewResponseDtoList.add(reviewResponseDto);
-        }
+        reviewList(reviewList, reviewResponseDtoList);
 
         return reviewResponseDtoList;
     }
-// 별점으로 정렬
+
+    // 별점으로 정렬
     public List<ReviewResponseDto> getReviewByStar(long storeId, int minRating, int maxRating, long userId ) {
         if (minRating < 1 || minRating > 5 || maxRating < 1 || maxRating > 5) {
             throw new CustomException(ErrorCode.STAR_OVER);
@@ -89,13 +87,16 @@ public class ReviewService {
         List<Review> reviewList = reviewRepository.findAllByStoreIdAndRatingBetweenAndUserIdNotOrderByModifiedAtDesc(storeId, minRating, maxRating, userId);
         List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
 
-        for (Review review : reviewList) {
-            ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
-            reviewResponseDtoList.add(reviewResponseDto);
-        }
+        reviewList(reviewList, reviewResponseDtoList);
 
         return reviewResponseDtoList;
     }
 
+    private static void reviewList(List<Review> reviewList, List<ReviewResponseDto> reviewResponseDtoList) {
+        for (Review review : reviewList) {
+            ReviewResponseDto reviewResponseDto = new ReviewResponseDto(review);
+            reviewResponseDtoList.add(reviewResponseDto);
+        }
+    }
 }
 

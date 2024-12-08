@@ -20,16 +20,17 @@ public enum OrderStatus {
     }
 
     public OrderStatus transitionStatus(OrderStatus status) {
-        if (status == OrderStatus.ORDER_COMPLETED) {
-            return OrderStatus.ORDER_ACCEPTED;
-        } else if (status == OrderStatus.ORDER_ACCEPTED) {
-            return OrderStatus.COOKING;
-        } else if (status == OrderStatus.COOKING) {
-            return OrderStatus.COOKING_COMPLETED;
-        } else if (status == OrderStatus.COOKING_COMPLETED) {
-            return OrderStatus.DELIVERY_PROGRESS;
-        } else {
-            return OrderStatus.DELIVERY_COMPLETED;
+        switch (status) {
+            case ORDER_COMPLETED:
+                return OrderStatus.ORDER_ACCEPTED;
+            case ORDER_ACCEPTED:
+                return OrderStatus.COOKING;
+            case COOKING:
+                return OrderStatus.COOKING_COMPLETED;
+            case COOKING_COMPLETED:
+                return OrderStatus.DELIVERY_PROGRESS;
+            default:
+                return OrderStatus.DELIVERY_COMPLETED;
         }
     }
 }

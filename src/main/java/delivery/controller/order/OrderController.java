@@ -21,22 +21,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/stores/{store_id}/orders")
+@RequestMapping("/stores/{storeId}/orders")
 public class OrderController {
 
     private final OrderService orderService;
 
     //주문 생성
     @PostMapping
-    public ResponseEntity<OrderResponseDto> createOrder(
-            @PathVariable("store_id") Long storeId,
-            @RequestBody OrderRequestDto dto,
-            HttpServletRequest request) {
+    public ResponseEntity<OrderResponseDto> createOrder(@PathVariable Long storeId,
+                                                        @RequestBody OrderRequestDto dto,
+                                                        HttpServletRequest request) {
 
-        HttpSession session = request.getSession(false);
-        Long loginUser = (Long) session.getAttribute("LOGIN_USER");
+        Long userId = getUserId(request);
 
-        OrderResponseDto orderResponseDto = orderService.createOrder(loginUser, storeId, dto.getMenuId());
+        OrderResponseDto orderResponseDto = orderService.createOrder(userId, storeId, dto.getMenuId());
 
         return new ResponseEntity<>(orderResponseDto, HttpStatus.CREATED);
     }
@@ -46,57 +44,58 @@ public class OrderController {
     //손님은 자신이 주문한 목록을 전체 조회
     //예외처리사항 -> 사장님이 자신의 가게 주문 목록이 아닌 손님으로의 주문목록을 조회하지 못함
     @GetMapping
-    public ResponseEntity<Page<OrderResponseDto>> findOrders(
-            @PathVariable("store_id") Long storeId,
-            HttpServletRequest request,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<OrderResponseDto>> findOrders(@PathVariable Long storeId,
+                                                             @RequestParam(defaultValue = "0") int page,
+                                                             @RequestParam(defaultValue = "10") int size,
+                                                             HttpServletRequest request) {
 
-        HttpSession session = request.getSession(false);
-        Long loginUser = (Long) session.getAttribute("LOGIN_USER");
+        Long userId = getUserId(request);
 
-        Page<OrderResponseDto> orderResponseDtoPage = orderService.findAllOrder(loginUser, storeId, page, size);
+        Page<OrderResponseDto> orderResponseDtoPage = orderService.findAllOrder(userId, storeId, page, size);
 
         return new ResponseEntity<>(orderResponseDtoPage, HttpStatus.OK);
     }
 
     //주문 단건 조회
-    @GetMapping("/{order_id}")
-    public ResponseEntity<OrderResponseDto> findOrder(
-            @PathVariable("order_id") Long orderId,
-            HttpServletRequest request) {
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderResponseDto> findOrder(@PathVariable Long orderId,
+                                                      HttpServletRequest request) {
 
-        HttpSession session = request.getSession(false);
-        Long loginUser = (Long) session.getAttribute("LOGIN_USER");
+        Long userId = getUserId(request);
 
-        OrderResponseDto orderResponseDto = orderService.findOrder(loginUser, orderId);
+        OrderResponseDto orderResponseDto = orderService.findOrder(userId, orderId);
 
         return new ResponseEntity<>(orderResponseDto, HttpStatus.OK);
     }
 
     //주문 상태 변경
-    @PatchMapping("/{order_id}")
-    public ResponseEntity<OrderResponseDto> updateOrder(
-            @PathVariable("order_id") Long orderId,
-            HttpServletRequest request) {
+    @PatchMapping("/{orderId}")
+    public ResponseEntity<OrderResponseDto> updateOrder(@PathVariable Long orderId,
+                                                        HttpServletRequest request) {
 
-        HttpSession session = request.getSession(false);
-        Long loginUser = (Long) session.getAttribute("LOGIN_USER");
+        Long userId = getUserId(request);
 
-        OrderResponseDto orderResponseDto = orderService.updateStatus(loginUser, orderId);
+        OrderResponseDto orderResponseDto = orderService.updateStatus(userId, orderId);
 
         return new ResponseEntity<>(orderResponseDto, HttpStatus.OK);
     }
 
     //주문 거절
     @PatchMapping("/{orderId}/reject")
-    public ResponseEntity<OrderResponseDto> rejectOrder(@PathVariable Long orderId, @RequestBody OrderRejectRequestDto dto, HttpServletRequest request){
+    public ResponseEntity<OrderResponseDto> rejectOrder(@PathVariable Long orderId,
+                                                        @RequestBody OrderRejectRequestDto dto,
+                                                        HttpServletRequest request){
 
-        HttpSession session = request.getSession(false);
-        Long loginUser = (Long) session.getAttribute("LOGIN_USER");
+        Long userId = getUserId(request);
 
-        OrderResponseDto OrderResponseDto = orderService.rejectOrder(loginUser, orderId, dto.getReason());
+        OrderResponseDto OrderResponseDto = orderService.rejectOrder(userId, orderId, dto.getReason());
 
         return new ResponseEntity<>(OrderResponseDto, HttpStatus.OK);
+    }
+
+    private static Long getUserId(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        Long loginUser = (Long) session.getAttribute("LOGIN_USER");
+        return loginUser;
     }
 }

@@ -26,6 +26,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<UserResponseDto> signup(@RequestBody UserRequestDto dto) {
+
         UserResponseDto userResponseDto = userService.signup(
                 dto.getName(),
                 dto.getEmail(),
@@ -37,7 +38,8 @@ public class UserController {
     }
 
     @PatchMapping
-    public ResponseEntity<Void> update(@RequestBody UpdatePasswordRequestDto dto, HttpServletRequest request) {
+    public ResponseEntity<Void> update(@RequestBody UpdatePasswordRequestDto dto,
+                                       HttpServletRequest request) {
 
         HttpSession session = request.getSession(false); // 세션 가져옴
         Long loginUser = (Long) session.getAttribute("LOGIN_USER"); // 로그인된 사용자 정보 조회
