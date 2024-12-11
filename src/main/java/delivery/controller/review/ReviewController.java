@@ -21,18 +21,18 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-
     @PostMapping("/stores/{storeId}/{orderId}/reviews")
     public ResponseEntity<ReviewResponseDto> addReview(@PathVariable long storeId,
                                                        @PathVariable long orderId,
                                                        @RequestBody ReviewRequestDto requestDto,
                                                        HttpServletRequest request
                                                        ) {
+
         // 세션에서 로그인된 사용자 정보 가져오기
-        HttpSession session = request.getSession(false);
-        Long userId = (Long) session.getAttribute("LOGIN_USER");
+        Long userId = getUserId(request);
 
         ReviewResponseDto reviewResponseDto = reviewService.addReview(userId, storeId, orderId, requestDto);
+
         return new ResponseEntity<>(reviewResponseDto, HttpStatus.CREATED);
       //  return ResponseEntity.ok(reviewService.addReview(storeId,orderId,userId,requestDto));
     }
@@ -41,22 +41,34 @@ public class ReviewController {
     @GetMapping("/stores/{storeId}/reviews")
     public ResponseEntity<List<ReviewResponseDto>> getReviews(@PathVariable Long storeId,
                                                               HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        Long loginUser = (Long) session.getAttribute("LOGIN_USER");
 
-     return ResponseEntity.ok(reviewService.getReviews(storeId));
+        Long userId = getUserId(request);
+
+        // 서비스 호출 및 결과 반환
+        List<ReviewResponseDto> reviews = reviewService.getReviews(storeId, userId);
+
+        return new ResponseEntity<>(reviews, HttpStatus.OK);
     }
 
     //별점조회
     @GetMapping("/stores/{storeId}/rating")
-    public ResponseEntity<List<ReviewResponseDto>> getAllReviewsByStar(
-            @PathVariable long storeId,
-            @RequestParam int minRating,
-            @RequestParam int maxRating,
-            HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        Long loginUser = (Long) session.getAttribute("LOGIN_USER");
+    public ResponseEntity<List<ReviewResponseDto>> getAllReviewsByStar(@PathVariable long storeId,
+                                                                       @RequestParam int minRating,
+                                                                       @RequestParam int maxRating,
+                                                                       HttpServletRequest request) {
 
-        return ResponseEntity.ok(reviewService.getReviewByStar(storeId, minRating, maxRating));
+        Long userId = getUserId(request);
+
+        // 서비스 호출 및 결과 반환
+        List<ReviewResponseDto> reviews = reviewService.getReviewByStar(storeId, minRating, maxRating, userId);
+
+        return new ResponseEntity<>(reviews, HttpStatus.OK);
+    }
+
+    private static Long getUserId(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+        Long userId = (Long) session.getAttribute("LOGIN_USER");
+        return userId;
     }
 }

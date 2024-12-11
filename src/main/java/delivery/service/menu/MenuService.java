@@ -6,7 +6,6 @@ import delivery.entity.menu.Menu;
 import delivery.entity.store.Store;
 import delivery.error.errorcode.ErrorCode;
 import delivery.error.exception.CustomException;
-import delivery.repository.store.StoreRepository;
 import delivery.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -71,7 +70,7 @@ public class MenuService {
     private Menu checkMenu(Long storeId, Long menuId) {
 
         // 메뉴 존재 여부 확인
-        Menu menu = menuRepository.findMenuByIdOrElseThrow(menuId);
+        Menu menu = findMenuByIdOrElseThrow(menuId);
 
         // 메뉴가 해당 가게의 메뉴인지 확인
         if (!Objects.equals(menu.getStore().getId(), storeId)) {
@@ -96,6 +95,12 @@ public class MenuService {
         }
 
         return store;
+    }
+
+    //menuId로 메뉴를 찾음
+    public Menu findMenuByIdOrElseThrow(Long menuId){
+        return menuRepository.findMenuById(menuId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
     }
 }
 

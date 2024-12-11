@@ -19,10 +19,12 @@ public enum ErrorCode {
     NOT_DELETE_STORE(BAD_REQUEST, "남아있는 가게가 존재합니다. 가게 폐업 후 탈퇴해주세요"),
     STAR_OVER(BAD_REQUEST, "1~5만 입력 가능합니다."),
     EMPTY(BAD_REQUEST, "내용을 입력해주세요."),
+    INVALID_ROLE(BAD_REQUEST, "유효하지 않은 역할입니다."),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
-    UNAUTHORIZED_PASSWORD(UNAUTHORIZED, "password 가 일치하지 않습니다."),
-    UNAUTHORIZED_PASSWORD_FORM(UNAUTHORIZED, "password 형식이 맞지 않습니다."),
+    UNAUTHORIZED_PASSWORD(UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
+    UNAUTHORIZED_PASSWORD_FORM(UNAUTHORIZED, "비밀번호 형식이 맞지 않습니다."),
+    UNAUTHORIZED_EMAIL_FORM(UNAUTHORIZED, "이메일 형식이 맞지 않습니다."),
     NOT_OWNER_CRUD(UNAUTHORIZED,"가게 운영자만 메뉴를 관리 할 수 있습니다."),
     NOT_OWNER_UPDATE(UNAUTHORIZED,"가게 운영자만 수정할 수 있습니다."),
     NOT_OWNER_DELETE(UNAUTHORIZED,"가게 운영자만 폐업할 수 있습니다."),
@@ -31,6 +33,7 @@ public enum ErrorCode {
     UNAUTHORIZED_OWNER_ORDER(UNAUTHORIZED, "사장님은 주문할 수 없습니다."),
     NOT_DELIVERY_COMPLETED(UNAUTHORIZED,"배달완료되지 않은 주문입니다."),
     REVIEW_COMPLETED(UNAUTHORIZED,"이미 리뷰가 작성된 주문입니다."),
+    UNAUTHORIZED_MIN_ORDER_PRICE(UNAUTHORIZED, "최소 주문금액을 넘겨야 합니다."),
 
 
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
